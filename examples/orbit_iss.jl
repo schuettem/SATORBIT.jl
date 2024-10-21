@@ -10,7 +10,7 @@ satellite = SATORBIT.Satellite(c_d, area, mass)
 # Orbit Parameters
 central_body = SATORBIT.Earth()
 
-alt_perigee = 409e3
+alt_perigee = 408.5e3
 radius_perigee = central_body.radius + alt_perigee
 alt_apogee = 409e3
 radius_apogee = central_body.radius + alt_apogee
@@ -25,7 +25,7 @@ f = 40.0 # True Anomaly (degrees)
 
 init_orbit = SATORBIT.COES(a, e, i, Ω, ω, f)
 
-start_date = SATORBIT.DateTime(2014, 8, 29, 0, 0, 0)
+start_date = SATORBIT.DateTime(2020, 8, 29, 0, 0, 0)
 
 J2 = false
 aero = false
@@ -40,4 +40,4 @@ orbit = SATORBIT.simulate_orbit(satellite, central_body, init_orbit, start_date,
 # SATORBIT.plot_3d(orbit)
 # SATORBIT.plot_ground_track(orbit)
 # SATORBIT.plot_atmosphere(orbit)
-# SATORBIT.plot_coes(orbit)
+SATORBIT.plot_coes(orbit)

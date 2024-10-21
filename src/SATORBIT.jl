@@ -48,7 +48,6 @@ include("plot/plot_3d.jl")
 include("plot/plot_ground_track.jl")
 include("plot/plot_atmosphere.jl")
 include("plot/plot_coes.jl")
-include("plot/plot_animation.jl")
 
 # Constants:
 GRAVITY_CONSTANT = 6.67430e-11 # m^3 kg^-1 s^-2

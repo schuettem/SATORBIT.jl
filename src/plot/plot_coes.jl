@@ -34,6 +34,11 @@ function plot_coes(orbit::OrbitPropagation)
     lines!(ax5, prop_time, ω, color = :blue)
     lines!(ax6, prop_time, f, color = :blue)
 
+    # add title to the figure
+    start_date = orbit.time_utc[1]
+    end_date = orbit.time_utc[end]
+    Label(fig[0, :], text = "$(start_date) to $(end_date)", fontsize = 24, tellwidth = false)
+
     fig
 
 end

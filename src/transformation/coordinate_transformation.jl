@@ -11,7 +11,7 @@ function coes2eci(orbit::COES, μ::Float64)
 
     p = a * (1 - e^2) # semi-latus rectum
     r = p / (1 + e * cos(f)) # distance from the central body
-    v = sqrt(μ / p) # velocity magnitude
+    v = sqrt(μ * (2/r - 1/a))
 
     r_pqw = [r * cos(f), r * sin(f), 0.0] # position in the perifocal frame
     v_pqw = [-v * sin(f), v * (e + cos(f)), 0.0] # velocity in the perifocal frame
@@ -29,43 +29,43 @@ function coes2eci(orbit::COES, μ::Float64)
 end
 
 function eci2coes(r::Vector{Float64}, v::Vector{Float64}, μ::Float64)
-    # Angular momentum vector
-    h = cross(r, v)
-    h_norm = norm(h)
+    r_mag = norm(r)
 
-    # Eccentricity vector
-    e_vec = ((norm(v)^2 - μ / norm(r)) * r - dot(r, v) * v) / μ
+    # specific angular momentum vector
+    h = cross(r, v)
+    h_mag = norm(h)
+
+    # inclination
+    i = acos(h[3] / h_mag)
+
+    # eccentricity
+    e_vec = ((norm(v)^2 - μ / r_mag) * r - dot(r, v) * v) / μ
     e = norm(e_vec)
 
-    # Inclination
-    i = acos(h[3] / h_norm)
+    # pointing vector
+    n = cross([0.0, 0.0, 1.0], h)
+    n_mag = norm(n)
 
-    # Node vector
-    K = [0.0, 0.0, 1.0]
-    n = cross(K, h)
-    n_norm = norm(n)
-
-    # Right ascension of the ascending node
-    Ω = acos(n[1] / n_norm)
-    if n[2] < 0 # If n[2] < 0, then 180° < Ω < 360°
+    # right ascension of the ascending node
+    Ω = acos(n[1] / n_mag)
+    if n[2] < 0
         Ω = 2 * π - Ω
     end
 
-    # Argument of periapsis
-    ω = acos(dot(n, e_vec) / (n_norm * e))
-    if e_vec[3] < 0 # If e_vec[3] < 0, then 180° < ω < 360°
+    # argument of periapsis
+    ω = acos(dot(n, e_vec) / (n_mag * e))
+    if e_vec[3] < 0
         ω = 2 * π - ω
     end
 
-    # True anomaly
-    f = acos(dot(e_vec, r) / (e * norm(r)))
-    if dot(r, v) < 0 # If r · v < 0, then 180° < f < 360°
+    # true anomaly
+    f = acos(dot(e_vec, r) / (e * r_mag))
+    if dot(r, v) < 0
         f = 2 * π - f
     end
 
-    # Semi-major axis
-    a = norm(r) * (1 + e * cos(f)) / (1 - e^2)
-
+    # semi-major axis
+    a = r_mag * (1 + e * cos(f)) / (1 - e^2)
 
     return (a, e, rad2deg(i), rad2deg(Ω), rad2deg(ω), rad2deg(f))
 end
@@ -75,33 +75,6 @@ end
 """
 function ecef2geo(r::Vector{Float64})
     r_mag, lon, lat = reclat(r)
-
-    # x = r[1]
-    # y = r[2]
-    # z = r[3]
-
-    # # Constants for WGS-84
-    # a = 6378137.0  # Semi-major axis
-    # f = 1 / 298.257223563  # Flattening
-    # b = a * (1 - f)  # Semi-minor axis
-    # e_sq = f * (2 - f)  # Square of eccentricity
-
-    # r = sqrt(x^2 + y^2)
-    # Esq = a^2 - b^2
-    # F = 54 * b^2 * z^2
-    # G = r^2 + (1 - e_sq) * z^2 - e_sq * Esq
-    # c = (e_sq^2 * F * r^2) / (G^3)
-    # s = (1 + c + sqrt(c^2 + 2 * c))^(1/3)
-    # P = F / (3 * (s + 1/s + 1)^2 * G^2)
-    # Q = sqrt(1 + 2 * e_sq^2 * P)
-    # r_0 = -(P * e_sq * r) / (1 + Q) + sqrt(0.5 * a^2 * (1 + 1/Q) - P * (1 - e_sq) * z^2 / (Q * (1 + Q)) - 0.5 * P * r^2)
-    # U = sqrt((r - e_sq * r_0)^2 + z^2)
-    # V = sqrt((r - e_sq * r_0)^2 + (1 - e_sq) * z^2)
-    # Z_0 = b^2 * z / (a * V)
-    # h = U * (1 - b^2 / (a * V))
-    # lat = atan((z + e_sq * Z_0) / r)
-    # lon = atan(y, x)
-
     return rad2deg(lat), rad2deg(lon)
 end
 
