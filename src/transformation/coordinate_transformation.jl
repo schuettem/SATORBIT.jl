@@ -84,24 +84,5 @@ end
 function eci2ecef(r::Vector{Float64}, time_utc::DateTime)
     R_eci_ecef = pxform("J2000", "ITRF93", utc2et(time_utc))
     r_ecef = R_eci_ecef * r
-
-    # # Define the Earth's rotation rate
-    # ω_e = 7.2921150e-5 # rad/s
-
-    # # Calculate the number of seconds since J2000 epoch
-    # j2000_epoch = DateTime(2000, 1, 1, 12, 0, 0)
-    # Δt = time_utc - j2000_epoch
-    # elapsed_seconds = Δt.value / 1e3 # Convert milliseconds to seconds
-
-    # # Calculate the angle of rotation
-    # θ = mod(ω_e * elapsed_seconds, 2 * π)
-
-    # # Define the rotation matrix
-    # R = [cos(θ) sin(θ) 0.0; -sin(θ) cos(θ) 0.0; 0.0 0.0 1.0]
-
-    # # Perform the transformation
-    # r_ecef = R * r
-    # # v_ecef = R * v
-
     return r_ecef
 end

@@ -1,4 +1,4 @@
-function acceleration(central_body::Earth, satellite::Satellite, r_eci::Vector{Float64}, v_eci::Vector{Float64}, disturbances::Pertubations)
+function acceleration(central_body::Earth, satellite::Satellite, r_eci::Vector{Float64}, v_eci::Vector{Float64}, disturbances::Pertubations, spaceweather_df::DataFrame, utc_time::DateTime)
     # gravitational acceleration
     a_grav = newton(central_body, r_eci)
 
@@ -11,8 +11,13 @@ function acceleration(central_body::Earth, satellite::Satellite, r_eci::Vector{F
 
     # atmospheric drag
     if disturbances.aero
-        error("Atmospheric drag not implemented yet")
-        ρ = get_total_mass_density(atmosphere_data)
+        # Atmospheric data:
+        f107a = f107adj_81avg(utc_time, spaceweather_df)
+        f107 = f107adj_day(utc_time, spaceweather_df)
+        ap = ap_at(utc_time, spaceweather_df)
+        atm = calc_atmosphere(utc_time, norm(r_eci) - central_body.radius, latitude, longitude, f107a, f107, ap)
+        ρ = get_total_mass_density(atm)
+        v_rel_norm = rel_velocity_to_atm(r_eci, v_eci, central_body)
         a_drag = drag(satellite, v_rel_norm, ρ)
     else
         a_drag = [0.0, 0.0, 0.0]
