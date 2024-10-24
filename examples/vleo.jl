@@ -37,7 +37,7 @@ nbr_steps = 200 # Number of steps per orbit
 
 orbit = SATORBIT.simulate_orbit(satellite, central_body, init_orbit, start_date, disturbances, nbr_orbits, nbr_steps)
 
-SATORBIT.plot_3d(orbit)
-SATORBIT.plot_ground_track(orbit)
+# SATORBIT.plot_3d(orbit)
+# SATORBIT.plot_ground_track(orbit)
 SATORBIT.plot_atmosphere(orbit)
 # SATORBIT.plot_coes(orbit)
