@@ -5,7 +5,7 @@ struct Earth <: Planet
     radius :: Float64 # m
     μ :: Float64 # m^3 s^-2
     J2 :: Float64 # J2 pertubation coefficient
-    atm_rot_vec :: Vector{Float64} # rad/s
+    atm_rot_vec :: Vector{Float64} # rad/s -> rotation vector of the atmosphere/earth
     coastlines_file :: String
 
     function Earth()

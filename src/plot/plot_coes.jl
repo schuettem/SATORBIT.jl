@@ -13,19 +13,19 @@ function plot_coes(orbit::OrbitPropagation)
 
     fig = Figure()
 
-    ax1 = Axis(fig[1, 1], xlabel = "Time [h]", ylabel = "a / m")
-    ax2 = Axis(fig[1, 2], xlabel = "Time [h]", ylabel = "e")
+    ax1 = Axis(fig[1, 1], xlabel = "Time / h", ylabel = "a / m")
+    ax2 = Axis(fig[1, 2], xlabel = "Time / h", ylabel = "e")
     ylims!(ax2, 0, 1)
 
-    ax3 = Axis(fig[2, 1], xlabel = "Time [h]", ylabel = "i / °")
+    ax3 = Axis(fig[2, 1], xlabel = "Time / h", ylabel = "i / °")
     ylims!(ax3, 0, 180)
 
-    ax4 = Axis(fig[2, 2], xlabel = "Time [h]", ylabel = "Ω / °")
+    ax4 = Axis(fig[2, 2], xlabel = "Time / h", ylabel = "Ω / °")
     ylims!(ax4, 0, 360)
 
-    ax5 = Axis(fig[3, 1], xlabel = "Time [h]", ylabel = "ω / °")
+    ax5 = Axis(fig[3, 1], xlabel = "Time / h", ylabel = "ω / °")
 
-    ax6 = Axis(fig[3, 2], xlabel = "Time [h]", ylabel = "f / °")
+    ax6 = Axis(fig[3, 2], xlabel = "Time / h", ylabel = "f / °")
 
     lines!(ax1, prop_time, a, color = :blue)
     lines!(ax2, prop_time, e, color = :blue)

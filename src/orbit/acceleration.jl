@@ -11,7 +11,7 @@ function acceleration(central_body::Earth, satellite::Satellite, r_eci::Vector{F
 
     # atmospheric drag
     if disturbances.aero
-        # TODO
+        error("Atmospheric drag not implemented yet")
         ρ = get_total_mass_density(atmosphere_data)
         a_drag = drag(satellite, v_rel_norm, ρ)
     else

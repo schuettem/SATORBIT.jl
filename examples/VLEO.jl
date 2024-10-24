@@ -9,16 +9,22 @@ satellite = SATORBIT.Satellite(c_d, area, mass)
 
 # Orbit Parameters
 central_body = SATORBIT.Earth()
+GRAV_CONST = 6.67430e-11
+mass_earth = 5.97219e24
+radius_earth = 6371000.0
+h = 300.0e3
+v_orbit = round(√(GRAV_CONST * mass_earth / (radius_earth + h)), digits=1)
 
-alt_perigee = 409e3
+
+alt_perigee = 300e3
 radius_perigee = central_body.radius + alt_perigee
-alt_apogee = 409e3
+alt_apogee = 300e3
 radius_apogee = central_body.radius + alt_apogee
 
 e = (radius_apogee - radius_perigee) / (radius_apogee + radius_perigee) # Eccentricity
 a = (radius_perigee + radius_apogee) / 2.0 # Semi-major axis
 
-i = 52.0 # Inclination (degrees)
+i = 96.0 # Inclination (degrees)
 f = 40.0 # True Anomaly (degrees)
 Ω = 106.0 # Right Ascension of the Ascending Node (degrees)
 ω = 234.0 # Argument of Periapsis (degrees)
@@ -33,11 +39,11 @@ disturbances = SATORBIT.Pertubations(J2, aero)
 
 # Simulation Parameters
 nbr_orbits = 2 # Number of orbits to simulate
-nbr_steps = 100 # Number of steps per orbit
+nbr_steps = 200 # Number of steps per orbit
 
 orbit = SATORBIT.simulate_orbit(satellite, central_body, init_orbit, start_date, disturbances, nbr_orbits, nbr_steps)
-orbit.eci
-SATORBIT.plot_3d(orbit)
+
+# SATORBIT.plot_3d(orbit)
 # SATORBIT.plot_ground_track(orbit)
 SATORBIT.plot_atmosphere(orbit)
 # SATORBIT.plot_coes(orbit)

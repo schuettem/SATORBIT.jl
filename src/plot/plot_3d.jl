@@ -27,6 +27,5 @@ function plot_3d(orbit::OrbitPropagation)
     scatter!(ax, x[1], y[1], z[1], color = :red)
     scatter!(ax, x[end], y[end], z[end], color = :green)
 
-
     return fig
 end

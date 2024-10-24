@@ -10,7 +10,7 @@ using CSV
 using DataFrames
 using Statistics
 using SPICE
-using GeometryBasics: Point3f0
+using DifferentialEquations
 
 # SPICE Kernel:
 # SPICE Kernel paths
@@ -56,7 +56,7 @@ function simulate_orbit(satellite::Satellite, central_body::Earth, init_orbit::C
     orbit = OrbitPropagation([init_orbit], [], [], [], [], [start_date], [utc2et(start_date)])
     spaceweather_df = spaceweather()
 
-    orbit_propagator!(satellite, central_body, orbit, disturbances, spaceweather_df, nbr_orbits, nbr_steps)
+    propagate_orbit!(satellite, central_body, orbit, disturbances, spaceweather_df, nbr_orbits, nbr_steps)
     return orbit
 end
 

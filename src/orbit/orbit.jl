@@ -37,7 +37,7 @@ mutable struct OrbitPropagation
     time_et::Vector{Float64}
 end
 
-function orbit_propagator!(satellite::Satellite, central_body::Earth, orbit::OrbitPropagation, disturbances::Pertubations, spaceweather_df::DataFrame, nbr_orbits::Int64, nbr_steps::Int64)
+function propagate_orbit!(satellite::Satellite, central_body::Earth, orbit::OrbitPropagation, disturbances::Pertubations, spaceweather_df::DataFrame, nbr_orbits::Int64, nbr_steps::Int64)
     # times:
     t_0 = utc2et(orbit.time_utc[1]) # transform start data from utc in emphemeris time (ET) in seconds since J2000
     P = 2 * π * orbit.coes[1].a ^ (3/2) / sqrt(central_body.μ) # period of the orbit in seconds
