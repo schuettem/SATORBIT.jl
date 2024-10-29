@@ -13,8 +13,8 @@ using SPICE
 using DifferentialEquations
 using HWM14
 
-# SPICE Kernel:
-# SPICE Kernel paths
+# The SPICE kernels used in this script are provided by the NASA Navigation and Ancillary Information Facility (NAIF).
+# Data Source: NAIF Generic Kernels (https://naif.jpl.nasa.gov/naif/data_generic.html).
 const leapseconds_kernel = joinpath(@__DIR__, "spice_kernels/latest_leapseconds.tls")
 const earth_kernel = joinpath(@__DIR__, "spice_kernels/earth_620120_240827.bpc") # Earth orientation history kernel
 
