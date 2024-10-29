@@ -1,8 +1,20 @@
+"""
+    Loads the spaceweather data from the file Kp_ap_Ap_SN_F107_since_1932.txt
+
+    This file was downloaded from the GFZ German Research Centre for Geosciences on Oct. 29, 2024
+    https://kp.gfz-potsdam.de/app/files/Kp_ap_Ap_SN_F107_since_1932.txt
+
+    DATA SOURCE: Geomagnetic Observatory Niemegk, GFZ German Research Centre for Geosciences
+                 Matzka, J., Stolle, C., Yamazaki, Y., Bronkalla, O. and Morschhauser, A., 2021. The geomagnetic Kp index
+                 and derived indices of geomagnetic activity. Space Weather, https://doi.org/10.1029/2020SW002641
+    LICENSE: CC BY 4.0, except for the sunspot numbers contained in this file, which have the CC BY-NC 4.0 license
+"""
 function spaceweather()
     # Example usage
-    file_path = "src/atmosphere/spaceweather.txt"
+    file_path = "src/atmosphere/Kp_ap_Ap_SN_F107_since_1932.txt"
     # Load the data into a DataFrame
-    df = DataFrame(CSV.File(file_path; delim=' ', ignorerepeated=true))
+    df = DataFrame(CSV.File(file_path; delim=' ', ignorerepeated=true, header=40))
+    println(df[1:5, :])
     # Generate row keys in yyyy-mm-dd format
     row_keys = Date[]
     for row in eachrow(df)
