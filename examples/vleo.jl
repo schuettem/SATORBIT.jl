@@ -1,9 +1,9 @@
 using SATORBIT
 
 # Satellite Parameters
-c_d = 2.2
-area = 0.1
-mass = 1.0
+c_d = 2.2 # Drag Coefficient
+area = 0.1 # Cross-sectional area (m^2)
+mass = 1.0 # Mass (kg)
 
 satellite = SATORBIT.Satellite(c_d, area, mass)
 
