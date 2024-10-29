@@ -9,12 +9,6 @@ satellite = SATORBIT.Satellite(c_d, area, mass)
 
 # Orbit Parameters
 central_body = SATORBIT.Earth()
-GRAV_CONST = 6.67430e-11
-mass_earth = 5.97219e24
-radius_earth = 6371000.0
-h = 300.0e3
-v_orbit = round(√(GRAV_CONST * mass_earth / (radius_earth + h)), digits=1)
-
 
 alt_perigee = 300e3
 radius_perigee = central_body.radius + alt_perigee
@@ -38,7 +32,7 @@ aero = false
 disturbances = SATORBIT.Pertubations(J2, aero)
 
 # Simulation Parameters
-nbr_orbits = 2 # Number of orbits to simulate
+nbr_orbits = 1 # Number of orbits to simulate
 nbr_steps = 200 # Number of steps per orbit
 
 orbit = SATORBIT.simulate_orbit(satellite, central_body, init_orbit, start_date, disturbances, nbr_orbits, nbr_steps)

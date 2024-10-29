@@ -37,82 +37,48 @@ mutable struct OrbitPropagation
     time_et::Vector{Float64}
 end
 
-function propagate_orbit!(satellite::Satellite, central_body::Earth, orbit::OrbitPropagation, disturbances::Pertubations, spaceweather_df::DataFrame, nbr_orbits::Int64, nbr_steps::Int64)
-    # times:
-    t_0 = utc2et(orbit.time_utc[1]) # transform start data from utc in emphemeris time (ET) in seconds since J2000
-    P = 2 * π * orbit.coes[1].a ^ (3/2) / sqrt(central_body.μ) # period of the orbit in seconds
-    t_end = t_0 + nbr_orbits * P
-    Δt = (t_end - t_0) / nbr_steps
+"""
+    Equation of motion for the satellite. This function will be used by the differential equation solver.
+"""
+function equations_of_motion!(du, u, p, t)
+    central_body, satellite, disturbances, spaceweather_df = p
+    r = u[1:3]
+    v = u[4:6]
 
-    set_parameters!(orbit, orbit.coes[1], central_body, orbit.time_utc[1], spaceweather_df) # set parameters for the first orbit
+    # utc time
+    utc_time = et2utc(t, "ISOC", 0)
+    utc_time = DateTime(utc_time, "yyyy-mm-ddTHH:MM:SS")
 
-    # propagate the orbit:
-    for i in 2:nbr_steps
-        t_et = t_0 + (i - 1) * Δt
+    # calculate the acceleration
+    a = acceleration(central_body, satellite, r, v, disturbances, spaceweather_df, utc_time)
 
-        push!(orbit.time_et, t_et) # store ET
-        utc_time = et2utc(t_et, "ISOC", 0) # transform ET to UTC
-        push!(orbit.time_utc, DateTime(utc_time, "yyyy-mm-ddTHH:MM:SS")) # transform ET to UTC
-
-        r_eci, v_eci = runge_kutta_4(central_body, satellite, orbit.eci[end].r, orbit.eci[end].v, Δt, disturbances) # in ECI
-
-        set_parameters!(orbit, ECI(r_eci, v_eci), central_body, orbit.time_utc[end], spaceweather_df)
-    end
+    # update the derivatives
+    du[1:3] = v
+    du[4:6] = a
 end
 
-# Implement the 4th-order Runge-Kutta method
-function runge_kutta_4(central_body, satellite, r, v, dt, disturbances)
-    k1_v = acceleration(central_body, satellite, r, v, disturbances) * dt
-    k1_r = v * dt
+function set_parameters!(orbit::OrbitPropagation, eci::ECI, central_body::Earth, time_et, time_utc::DateTime, spaceweather_df::DataFrame)
+    # et:
+    push!(orbit.time_et, time_et)
 
-    k2_v = acceleration(central_body, satellite, r + 0.5 * k1_r, v + 0.5 * k1_v, disturbances) * dt
-    k2_r = (v + 0.5 * k1_v) * dt
+    # utc:
+    push!(orbit.time_utc, time_utc)
 
-    k3_v = acceleration(central_body, satellite, r + 0.5 * k2_r, v + 0.5 * k2_v, disturbances) * dt
-    k3_r = (v + 0.5 * k2_v) * dt
-
-    k4_v = acceleration(central_body, satellite, r + k3_r, v + k3_v, disturbances) * dt
-    k4_r = (v + k3_v) * dt
-
-    r_new = r + (k1_r + 2*k2_r + 2*k3_r + k4_r) / 6
-    v_new = v + (k1_v + 2*k2_v + 2*k3_v + k4_v) / 6
-
-    return r_new, v_new
-end
-
-function set_parameters!(orbit::OrbitPropagation, coes::COES, central_body::Earth, time_utc::DateTime, spaceweather_df::DataFrame)
-    # ECI:
-    r_eci, v_eci = coes2eci(coes, central_body.μ)
-    push!(orbit.eci, ECI(r_eci, v_eci))
-    # ECEF:
-    r_ecef = eci2ecef(r_eci, time_utc)
-    push!(orbit.ecef, ECEF(r_ecef))
-    # Geodetic:
-    latitude, longitude = ecef2geo(r_ecef)
-    push!(orbit.geo, GEO(latitude, longitude))
-    # Atmospheric data:
-    f107a = f107adj_81avg(time_utc, spaceweather_df)
-    f107 = f107adj_day(time_utc, spaceweather_df)
-    ap = ap_at(time_utc, spaceweather_df)
-    atm = calc_atmosphere(time_utc, norm(r_eci) - central_body.radius, latitude, longitude, f107a, f107, ap)
-    n_o = get_o_density(atm)
-    T = get_temperature(atm)
-    v_ref = rel_velocity_to_atm(r_eci, v_eci, central_body)
-    push!(orbit.atmosphere_data, Atmosphere(n_o, T, v_ref))
-end
-
-function set_parameters!(orbit::OrbitPropagation, eci::ECI, central_body::Earth, time_utc::DateTime, spaceweather_df::DataFrame)
     # ECI:
     push!(orbit.eci, eci)
+
     # COES:
     a, e, i, Ω, ω, f = eci2coes(eci.r, eci.v, central_body.μ)
     push!(orbit.coes, COES(a, e, i, Ω, ω, f))
+
     # ECEF:
     r_ecef = eci2ecef(eci.r, time_utc)
     push!(orbit.ecef, ECEF(r_ecef))
+
     # Geodetic:
     latitude, longitude = ecef2geo(r_ecef)
     push!(orbit.geo, GEO(latitude, longitude))
+
     # Atmospheric data:
     f107a = f107adj_81avg(time_utc, spaceweather_df)
     f107 = f107adj_day(time_utc, spaceweather_df)
