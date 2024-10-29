@@ -1,4 +1,4 @@
-function acceleration(central_body::Earth, satellite::Satellite, r_eci::Vector{Float64}, v_eci::Vector{Float64}, disturbances::Pertubations, spaceweather_df::DataFrame, utc_time::DateTime)
+function acceleration(central_body::Earth, satellite::Satellite, r_eci::Vector{Float64}, v_eci::Vector{Float64}, disturbances::Pertubations, spaceweather_df::DataFrame, time_utc::DateTime)
     # gravitational acceleration
     a_grav = newton(central_body, r_eci)
 
@@ -12,12 +12,12 @@ function acceleration(central_body::Earth, satellite::Satellite, r_eci::Vector{F
     # atmospheric drag
     if disturbances.aero
         # Atmospheric data:
-        f107a = f107adj_81avg(utc_time, spaceweather_df)
-        f107 = f107adj_day(utc_time, spaceweather_df)
-        ap = ap_at(utc_time, spaceweather_df)
-        atm = calc_atmosphere(utc_time, norm(r_eci) - central_body.radius, latitude, longitude, f107a, f107, ap)
+        f107a = f107adj_81avg(time_utc, spaceweather_df)
+        f107 = f107adj_day(time_utc, spaceweather_df)
+        ap = ap_at(time_utc, spaceweather_df)
+        atm = calc_atmosphere(time_utc, norm(r_eci) - central_body.radius, latitude, longitude, f107a, f107, ap)
         ρ = get_total_mass_density(atm)
-        v_rel_norm = rel_velocity_to_atm(r_eci, v_eci, central_body)
+        v_rel_norm = rel_velocity_to_atm(r_eci, v_eci, central_body, time_utc, latitude, longitude, 0.0, f107a, f107, [0.0, ap])
         a_drag = drag(satellite, v_rel_norm, ρ)
     else
         a_drag = [0.0, 0.0, 0.0]
@@ -65,11 +65,4 @@ function drag(satellite::Satellite, v_rel_norm::Float64, ρ::Float64)
     # Drag acceleration
     a_drag = - 1/2 * ρ * A * c_d / m * v_rel_norm * v_rel
     return a_drag
-end
-
-function rel_velocity_to_atm(r::Vector{Float64}, v::Vector{Float64}, central_body::Earth)
-    # Relative velocity with respect to the atmosphere
-    v_rel = v - cross(central_body.atm_rot_vec, r) # v , r in ECI
-    v_rel_norm = norm(v_rel)
-    return v_rel_norm
 end

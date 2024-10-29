@@ -18,7 +18,7 @@ radius_apogee = central_body.radius + alt_apogee
 e = (radius_apogee - radius_perigee) / (radius_apogee + radius_perigee) # Eccentricity
 a = (radius_perigee + radius_apogee) / 2.0 # Semi-major axis
 
-i = 96.0 # Inclination (degrees)
+i = 0.0 # Inclination (degrees)
 f = 40.0 # True Anomaly (degrees)
 Ω = 106.0 # Right Ascension of the Ascending Node (degrees)
 ω = 234.0 # Argument of Periapsis (degrees)
@@ -32,7 +32,7 @@ aero = false
 disturbances = SATORBIT.Pertubations(J2, aero)
 
 # Simulation Parameters
-nbr_orbits = 1 # Number of orbits to simulate
+nbr_orbits = 2 # Number of orbits to simulate
 nbr_steps = 200 # Number of steps per orbit
 
 orbit = SATORBIT.simulate_orbit(satellite, central_body, init_orbit, start_date, disturbances, nbr_orbits, nbr_steps)
