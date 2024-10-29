@@ -1,4 +1,6 @@
 function plot_ground_track(orbit::OrbitPropagation)
+    CairoMakie.activate!()
+
     latitude = Float64[]
     longitude = Float64[]
     for geo in orbit.geo

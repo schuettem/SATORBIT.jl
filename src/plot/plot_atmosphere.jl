@@ -1,4 +1,5 @@
 function plot_atmosphere(orbit::OrbitPropagation)
+    CairoMakie.activate!()
 
     prop_time = orbit.time_et .- orbit.time_et[1]
 

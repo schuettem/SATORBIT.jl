@@ -14,7 +14,6 @@ function spaceweather()
     file_path = "src/atmosphere/Kp_ap_Ap_SN_F107_since_1932.txt"
     # Load the data into a DataFrame
     df = DataFrame(CSV.File(file_path; delim=' ', ignorerepeated=true, header=40))
-    println(df[1:5, :])
     # Generate row keys in yyyy-mm-dd format
     row_keys = Date[]
     for row in eachrow(df)

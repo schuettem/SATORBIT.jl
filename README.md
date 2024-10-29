@@ -6,35 +6,35 @@ SATORBIT.jl is a Julia package designed for simulating satellite orbits around E
 - **Atmospheric Drag**: Incorporate atmospheric drag in the calculations using the atmospheric data from the NRLMSISE-00 model by the US Naval Research Laboratory (NRL).
 - **Space Weather Data**: Utilize space weather data from the GFZ German Research Centre for Geosciences as input for the atmospheric model.
 - **SPICE Kernels**: SPICE kernels are used for precise ephemeris data and transformations from NASA Navigation and Ancillary Information Facility (NAIF).
-- **HWM14**: The Horizontal Wind Model 2014 (HWM14) from the Naval Research Laboratory (NRL) is used to take into account the atmospheric wind.
+- **HWM14**: The Horizontal Wind Model 2014 (HWM14) from the Naval Research Laboratory (NRL) is used to account for atmospheric wind.
 
-Note: This project is not affiliated with NASA, NRL, or GFZ German Research Centre for Geosciences in any way.
+Note: This project is not affiliated with NASA, NRL, or the GFZ German Research Centre for Geosciences in any way.
 
-## Acknowledements
+## Acknowledgements
 This package uses the following packages and models:
 - PyNRLMSISE-00:
-  - We are using the [PyNRLMSISE-00](https://pypi.org/project/nrlmsise00/) python interface for the NRLMSISE-00 empirical neutral atmosphere model.
+  - We are using the [PyNRLMSISE-00](https://pypi.org/project/nrlmsise00/) Python interface for the NRLMSISE-00 empirical neutral atmosphere model.
    - The NRLMSISE-00 is an empirical, global reference atmospheric model developed by the US Naval Research Laboratory (NRL). It models the temperatures and densities of the Earth's atmosphere from the ground up to space. The model was developed by Mike Picone, Alan Hedin, and Doug Drob.
    - We acknowledge the Community Coordinated Modeling Center (CCMC) at Goddard Space Flight Center for the use of the [NRLMSIS-00](https://ccmc.gsfc.nasa.gov/models/NRLMSIS~00/).
 
 - SPICE.jl:
-  - Is used for the SPICE kernel operations
+  - Used for the SPICE kernel operations.
   - This package is a Julia wrapper for [NASA NAIF's SPICE toolkit](https://naif.jpl.nasa.gov/naif/).
-  - Refer to the [documentation](http://juliaastro.org/SPICE.jl/stable/) or the [GitHub page](https://github.com/JuliaAstro/SPICE.jl?tab=readme-ov-file) for more details.
+  - Refer to the [documentation](http://juliaastro.org/SPICE.jl/stable/) or the [GitHub page](https://github.com/JuliaAstro/SPICE.jl?tab=readme-ov-file) for more information.
 
 - SPICE kernels:
   - The SPICE kernels used in this project are provided by the NASA Navigation and Ancillary Information Facility (NAIF).
   - Data Source: [NAIF Generic Kernels](https://naif.jpl.nasa.gov/naif/data_generic.html).
   - Earth orientation kernel: High accuracy, historical kernel from 1962-01-01 till 2024-08-27. Downloaded from https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/
-  - Leapseconds kernel: Dowloaded from https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/
+  - Leap seconds kernel: Dowloaded from https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/
 
-- Spaceweather data:
+- Space weather data:
   - This data is used as input for the atmospheric model (F10.7, F10.7a, ap).
   - Data source: [Geomagnetic Observatory Niemegk, GFZ German Research Centre for Geosciences](https://www.gfz-potsdam.de/)
   - The file Kp_ap_Ap_SN_F107_since_1932.txt was downloaded on Oct. 29th, 2024 from https://kp.gfz-potsdam.de/app/files/Kp_ap_Ap_SN_F107_since_1932.txt
 
 ## References
-- Spaceweather:<br>
+- Space weather:<br>
   Matzka, J., Stolle, C., Yamazaki, Y., Bronkalla, O. and Morschhauser, A., 2021. The geomagnetic Kp index and derived indices of geomagnetic activity. Space Weather, https://doi.org/10.1029/2020SW002641
 - NRLMSISE-00:<br>
   Picone, J. M., Hedin, A. E., Drob, D. P., & Aikin, A. C. (2002). NRLMSISE-00 empirical model of the atmosphere: Statistical comparisons and scientific issues. Journal of Geophysical Research: Space Physics, 107(A12), 1468. [doi:10.1029/2002JA009430](https://doi.org/10.1029/2002JA009430)
@@ -46,7 +46,7 @@ This package uses the following packages and models:
 This code is licensed under the MIT License
 
 ## Data License
-- Spacewaether data:<br>
+- Space weather data:<br>
   General:<br>
   This project uses data licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) license. Data source: [Geomagnetic Observatory Niemegk, GFZ German Research Centre for Geosciences](https://www.gfz-potsdam.de/). <br>
   Sunspot data:<br>

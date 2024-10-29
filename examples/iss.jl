@@ -1,9 +1,9 @@
 using SATORBIT
 
 # Satellite Parameters
-c_d = 2.2
-area = 0.1
-mass = 1.0
+c_d = 2.2 # Drag Coefficient
+area = 0.1 # Cross-sectional area (m^2)
+mass = 1.0 # Mass (kg)
 
 satellite = SATORBIT.Satellite(c_d, area, mass)
 
@@ -36,8 +36,8 @@ nbr_orbits = 2 # Number of orbits to simulate
 nbr_steps = 100 # Number of steps per orbit
 
 orbit = SATORBIT.simulate_orbit(satellite, central_body, init_orbit, start_date, disturbances, nbr_orbits, nbr_steps)
-orbit.eci
-SATORBIT.plot_3d(orbit)
+
+# SATORBIT.plot_3d(orbit)
 # SATORBIT.plot_ground_track(orbit)
-SATORBIT.plot_atmosphere(orbit)
+# SATORBIT.plot_atmosphere(orbit)
 # SATORBIT.plot_coes(orbit)

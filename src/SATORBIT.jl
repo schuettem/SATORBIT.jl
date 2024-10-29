@@ -4,7 +4,7 @@ module SATORBIT
 using PyCall
 using Dates
 using LinearAlgebra
-# using CairoMakie
+using CairoMakie
 using GLMakie
 using CSV
 using DataFrames
