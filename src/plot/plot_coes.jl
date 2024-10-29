@@ -1,4 +1,6 @@
 function plot_coes(orbit::OrbitPropagation)
+    CairoMakie.activate!()
+
     a = [coes.a for coes in orbit.coes]
     e = [coes.e for coes in orbit.coes]
     i = [coes.i for coes in orbit.coes]

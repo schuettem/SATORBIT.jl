@@ -1,4 +1,6 @@
 function plot_3d(orbit::OrbitPropagation)
+    GLMakie.activate!()
+
     fig = Figure()
     x = Float64[]
     y = Float64[]
