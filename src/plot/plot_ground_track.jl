@@ -16,7 +16,7 @@ function plot_ground_track(orbit::OrbitPropagation)
 
     # Add the Earth coastlines to the plot
     header = ["longitude", "latitude"]
-    coastlines = CSV.read("coastlines/coastlines_earth.csv", DataFrame, header = header)
+    coastlines = CSV.read("src/planetary_data/coastlines_earth.csv", DataFrame, header = header)
 
     scatter!(ax, coastlines[:, "longitude"], coastlines[:, "latitude"], color = :black, markersize = 0.5)
 
