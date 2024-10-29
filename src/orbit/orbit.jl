@@ -86,6 +86,6 @@ function set_parameters!(orbit::OrbitPropagation, eci::ECI, central_body::Earth,
     atm = calc_atmosphere(time_utc, norm(eci.r) - central_body.radius, latitude, longitude, f107a, f107, ap)
     n_o = get_o_density(atm)
     T = get_temperature(atm)
-    v_ref = rel_velocity_to_atm(eci.r, eci.v, central_body)
+    v_ref = rel_velocity_to_atm(eci.r, eci.v, central_body, time_utc, latitude, longitude, 0.0, f107a, f107, [0.0, ap])
     push!(orbit.atmosphere_data, Atmosphere(n_o, T, v_ref))
 end

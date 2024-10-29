@@ -11,6 +11,7 @@ using DataFrames
 using Statistics
 using SPICE
 using DifferentialEquations
+using HWM14
 
 # SPICE Kernel:
 # SPICE Kernel paths

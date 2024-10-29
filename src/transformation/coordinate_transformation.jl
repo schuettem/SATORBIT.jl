@@ -86,3 +86,31 @@ function eci2ecef(r::Vector{Float64}, time_utc::DateTime)
     r_ecef = R_eci_ecef * r
     return r_ecef
 end
+
+"""
+    transform ecef (earth-centered, earth-fixed) to eci (earth-centered inertial)
+"""
+function ecef2eci(r::Vector{Float64}, time_utc::DateTime)
+    R_ecef_eci = pxform("ITRF93", "J2000", utc2et(time_utc))
+    r_eci = R_ecef_eci * r
+    return r_eci
+end
+
+"""
+    transform meridonal wind and zonal wind to the eci frame
+    w[1]: meridional wind
+    w[2]: zonal wind
+"""
+function wind2eci(w::Vector{Float64}, lat::Float64, lon::Float64, time_utc::DateTime)
+    # Wind velocity vector in ECEF coordinates (assuming flat Earth approximation)
+    w_ecef = [
+        -w[2] * sin(lon) - w[1] * sin(lat) * cos(lon);
+         w[2] * cos(lon) - w[1] * sin(lat) * sin(lon);
+         w[1] * cos(lat)
+    ]
+    # Rotation matrix from ECEF to ECI
+    R_ecef_eci = pxform("ITRF93", "J2000", utc2et(time_utc))
+    # Transform the wind velocity vector to ECI
+    w_eci = R_ecef_eci * w_ecef
+    return w_eci
+end
