@@ -8,7 +8,7 @@ SATORBIT.jl is a Julia package designed for simulating satellite orbits around E
 - **SPICE Kernels**: SPICE kernels are used for precise ephemeris data and transformations from NASA Navigation and Ancillary Information Facility (NAIF).
 - **HWM14**: The Horizontal Wind Model 2014 (HWM14) from the Naval Research Laboratory (NRL) is used to account for atmospheric wind.
 
-Note: This project is not affiliated with NASA, NRL, or the GFZ German Research Centre for Geosciences in any way.
+Note: This project is not affiliated with NASA, NRL, NAIF, or the GFZ German Research Centre for Geosciences in any way.
 
 ## Installation
 
