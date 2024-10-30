@@ -12,6 +12,9 @@ Note: This project is not affiliated with NASA, NRL, NAIF, or the GFZ German Res
 
 ## Installation
 
+### Prerequisites
+Install the package [HWM14](https://github.com/schuettem/HWM14) from GitHub:
+
 ### Method 1: Direct Package Addition
 1. Open julia and enter the package manager (Pkg) mode by pressing `]`.
 2. Add the SATORBIT package using the following command:

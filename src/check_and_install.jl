@@ -1,26 +1,3 @@
-# Check if HWM14 is installed, if not install it from GitHub
-function check_and_install_hwm14()
-    # try
-    #     @info "Using HWM14 package..."
-    #     @eval using HWM14
-    # catch e
-    #     @info "Using HWM14 package failed. Installing HWM14 from GitHub..."
-    #     if isa(e, ArgumentError) && occursin("HWM14", e.msg)
-    #         try
-    #             @info "... via SSH ..."
-    #             Pkg.add(url="git@github.com:schuettem/HWM14.git")
-    #         catch e
-    #             @info "... via HTTPS ..."
-    #             Pkg.add(url="https://github.com/schuettem/HWM14.git")
-    #         end
-    #         @eval using HWM14
-    #     else
-    #         @info "installing of HWM14 package failed. Please install HWM14 from GitHub."
-    #         rethrow(e)
-    #     end
-    # end
-end
-
 # Check and install nrlmsise00 Python package
 function check_and_install_nrlmsise00()
     try
@@ -28,7 +5,7 @@ function check_and_install_nrlmsise00()
         return pyimport("nrlmsise00")
     catch e
         @info "loading of nrlmsise00 failed. Installing nrlmsise00 via pip..."
-        if isa(e, PyError) && occursin("ModuleNotFoundError", e.msg)
+        if isa(e, PyCall.PyError) && occursin("ModuleNotFoundError", e.msg)
             run(`$(PyCall.python) -m pip install nrlmsise00`)
             return pyimport("nrlmsise00")
         else

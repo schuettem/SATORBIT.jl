@@ -17,7 +17,6 @@ include("check_and_install.jl")
 
 const nrlmsise00 = PyNULL()
 function __init__()
-    # check_and_install_hwm14() # Check and install HWM14 package
     atm_model = check_and_install_nrlmsise00() # Check and install NRLMSISE-00 package
     copy!(nrlmsise00, atm_model)
     check_and_install_spice() # Check and install SPICE kernels
