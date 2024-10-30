@@ -6,7 +6,13 @@ function check_and_install_hwm14()
     catch e
         @info "loading HWM14 package failed. Installing HWM14 from GitHub..."
         if isa(e, ArgumentError) && occursin("HWM14", e.msg)
-            Pkg.add(url="git@github.com:schuettem/HWM14.git")
+            try
+                @info "... via SSH ..."
+                Pkg.add(url="git@github.com:schuettem/HWM14.git")
+            catch e
+                @info "... via HTTPS ..."
+                Pkg.add(url="https://github.com/schuettem/HWM14.git")
+            end
             @eval using HWM14
         else
             @info "installing of HWM14 package failed. Please install HWM14 from GitHub."
