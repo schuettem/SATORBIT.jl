@@ -4,10 +4,7 @@ function check_and_install_nrlmsise00()
         @info "loading nrlmsise00"
         return pyimport("nrlmsise00")
     catch e
-        @info "loading of nrlmsise00 failed. Installing nrlmsise00 via pip..."
-        @info "Error type: $(typeof(e))"
-        @info "Error message: $(e.msg)"
-        if isa(e, PyCall.PyError) && occursin("ModuleNotFoundError", e.msg)
+        if isa(e, PyCall.PyError) && occursin("PyImport_ImportModule", e.msg)
             @info "start installing nrlmsise00 via pip..."
             run(`$(PyCall.python) -m pip install nrlmsise00`)
             @info "installing nrlmsise00 finished."
