@@ -12,6 +12,7 @@ using SPICE
 using OrdinaryDiffEq
 using Pkg
 using PyCall
+using HWM14
 include("check_and_install.jl")
 
 const nrlmsise00 = PyNULL()

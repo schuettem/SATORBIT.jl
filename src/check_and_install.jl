@@ -1,24 +1,24 @@
 # Check if HWM14 is installed, if not install it from GitHub
 function check_and_install_hwm14()
-    try
-        @info "loading HWM14 package"
-        @eval using HWM14
-    catch e
-        @info "loading HWM14 package failed. Installing HWM14 from GitHub..."
-        if isa(e, ArgumentError) && occursin("HWM14", e.msg)
-            try
-                @info "... via SSH ..."
-                Pkg.add(url="git@github.com:schuettem/HWM14.git")
-            catch e
-                @info "... via HTTPS ..."
-                Pkg.add(url="https://github.com/schuettem/HWM14.git")
-            end
-            @eval using HWM14
-        else
-            @info "installing of HWM14 package failed. Please install HWM14 from GitHub."
-            rethrow(e)
-        end
-    end
+    # try
+    #     @info "Using HWM14 package..."
+    #     @eval using HWM14
+    # catch e
+    #     @info "Using HWM14 package failed. Installing HWM14 from GitHub..."
+    #     if isa(e, ArgumentError) && occursin("HWM14", e.msg)
+    #         try
+    #             @info "... via SSH ..."
+    #             Pkg.add(url="git@github.com:schuettem/HWM14.git")
+    #         catch e
+    #             @info "... via HTTPS ..."
+    #             Pkg.add(url="https://github.com/schuettem/HWM14.git")
+    #         end
+    #         @eval using HWM14
+    #     else
+    #         @info "installing of HWM14 package failed. Please install HWM14 from GitHub."
+    #         rethrow(e)
+    #     end
+    # end
 end
 
 # Check and install nrlmsise00 Python package
@@ -46,9 +46,10 @@ function check_and_install_spice()
 
     # Load SPICE Kernels
     if isfile(leapseconds_kernel) && isfile(earth_kernel)
+        @info "Loading SPICE kernels..."
         furnsh(leapseconds_kernel)
         furnsh(earth_kernel)
     else
-        error("One or more SPICE kernel files are missing.")
+        @error("One or more SPICE kernel files are missing.")
     end
 end
