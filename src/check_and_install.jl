@@ -14,19 +14,3 @@ function check_and_install_nrlmsise00()
         end
     end
 end
-
-function check_and_install_spice()
-    # The SPICE kernels used in this script are provided by the NASA Navigation and Ancillary Information Facility (NAIF).
-    # Data Source: NAIF Generic Kernels (https://naif.jpl.nasa.gov/naif/data_generic.html).
-    leapseconds_kernel = joinpath(@__DIR__, "spice_kernels/latest_leapseconds.tls")
-    earth_kernel = joinpath(@__DIR__, "spice_kernels/earth_620120_240827.bpc") # Earth orientation history kernel
-
-    # Load SPICE Kernels
-    if isfile(leapseconds_kernel) && isfile(earth_kernel)
-        @info "Loading SPICE kernels..."
-        furnsh(leapseconds_kernel)
-        furnsh(earth_kernel)
-    else
-        @error("One or more SPICE kernel files are missing.")
-    end
-end

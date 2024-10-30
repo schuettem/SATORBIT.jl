@@ -19,7 +19,20 @@ const nrlmsise00 = PyNULL()
 function __init__()
     atm_model = check_and_install_nrlmsise00() # Check and install NRLMSISE-00 package
     copy!(nrlmsise00, atm_model)
-    check_and_install_spice() # Check and install SPICE kernels
+
+    # The SPICE kernels used in this script are provided by the NASA Navigation and Ancillary Information Facility (NAIF).
+    # Data Source: NAIF Generic Kernels (https://naif.jpl.nasa.gov/naif/data_generic.html).
+    leapseconds_kernel = joinpath(@__DIR__, "spice_kernels/latest_leapseconds.tls")
+    earth_kernel = joinpath(@__DIR__, "spice_kernels/earth_620120_240827.bpc") # Earth orientation history kernel
+
+    # Load SPICE Kernels
+    if isfile(leapseconds_kernel) && isfile(earth_kernel)
+        @info "Loading SPICE kernels..."
+        furnsh(leapseconds_kernel)
+        furnsh(earth_kernel)
+    else
+        @error("One or more SPICE kernel files are missing.")
+    end
 end
 
 # Include files:
