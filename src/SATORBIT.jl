@@ -16,15 +16,14 @@ using HWM14
 include("check_and_install.jl")
 
 const nrlmsise00 = PyNULL()
+# The SPICE kernels used in this script are provided by the NASA Navigation and Ancillary Information Facility (NAIF).
+# Data Source: NAIF Generic Kernels (https://naif.jpl.nasa.gov/naif/data_generic.html).
+const leapseconds_kernel = joinpath(@__DIR__, "spice_kernels/latest_leapseconds.tls")
+const earth_kernel = joinpath(@__DIR__, "spice_kernels/earth_620120_240827.bpc") # Earth orientation history kernel
+
 function __init__()
     atm_model = check_and_install_nrlmsise00() # Check and install NRLMSISE-00 package
     copy!(nrlmsise00, atm_model)
-
-    # The SPICE kernels used in this script are provided by the NASA Navigation and Ancillary Information Facility (NAIF).
-    # Data Source: NAIF Generic Kernels (https://naif.jpl.nasa.gov/naif/data_generic.html).
-    leapseconds_kernel = joinpath(@__DIR__, "spice_kernels/latest_leapseconds.tls")
-    earth_kernel = joinpath(@__DIR__, "spice_kernels/earth_620120_240827.bpc") # Earth orientation history kernel
-
     # Load SPICE Kernels
     if isfile(leapseconds_kernel) && isfile(earth_kernel)
         @info "Loading SPICE kernels..."
