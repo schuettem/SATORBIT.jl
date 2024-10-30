@@ -24,14 +24,7 @@ const earth_kernel = joinpath(@__DIR__, "spice_kernels/earth_620120_240827.bpc")
 function __init__()
     atm_model = check_and_install_nrlmsise00() # Check and install NRLMSISE-00 package
     copy!(nrlmsise00, atm_model)
-    # Load SPICE Kernels
-    if isfile(leapseconds_kernel) && isfile(earth_kernel)
-        @info "Loading SPICE kernels..."
-        furnsh(leapseconds_kernel)
-        furnsh(earth_kernel)
-    else
-        @error("One or more SPICE kernel files are missing.")
-    end
+    check_and_install_spice(leapseconds_kernel, earth_kernel) # Check and install SPICE
 end
 
 # Include files:

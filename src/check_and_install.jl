@@ -25,3 +25,16 @@ function check_and_install_nrlmsise00()
         end
     end
 end
+
+# Check and install SPICE
+function check_and_install_spice(leapseconds_kernel, earth_kernel)
+    # Load SPICE Kernels
+    if isfile(leapseconds_kernel) && isfile(earth_kernel)
+        @info "loading SPICE kernels..."
+        furnsh(leapseconds_kernel)
+        furnsh(earth_kernel)
+        @info "loading SPICE kernels finished."
+    else
+        @error("One or more SPICE kernel files are missing.")
+    end
+end
