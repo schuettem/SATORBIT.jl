@@ -1,7 +1,6 @@
 module SATORBIT
 
 # Packages:
-using PyCall
 using Dates
 using LinearAlgebra
 using CairoMakie
@@ -10,28 +9,17 @@ using CSV
 using DataFrames
 using Statistics
 using SPICE
-using DifferentialEquations
-using HWM14
+using OrdinaryDiffEq
+using Pkg
+using PyCall
+include("check_and_install.jl")
 
-# The SPICE kernels used in this script are provided by the NASA Navigation and Ancillary Information Facility (NAIF).
-# Data Source: NAIF Generic Kernels (https://naif.jpl.nasa.gov/naif/data_generic.html).
-const leapseconds_kernel = joinpath(@__DIR__, "spice_kernels/latest_leapseconds.tls")
-const earth_kernel = joinpath(@__DIR__, "spice_kernels/earth_620120_240827.bpc") # Earth orientation history kernel
-
-# import Python Packages
 const nrlmsise00 = PyNULL()
-
 function __init__()
-    # Load SPICE Kernels
-    if isfile(leapseconds_kernel) && isfile(earth_kernel)
-        furnsh(leapseconds_kernel)
-        furnsh(earth_kernel)
-    else
-        error("One or more SPICE kernel files are missing.")
-    end
-
-    # Import Python package
-    copy!(nrlmsise00, pyimport("nrlmsise00"))
+    check_and_install_hwm14() # Check and install HWM14 package
+    atm_model = check_and_install_nrlmsise00() # Check and install NRLMSISE-00 package
+    copy!(nrlmsise00, atm_model)
+    check_and_install_spice() # Check and install SPICE kernels
 end
 
 # Include files:

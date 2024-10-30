@@ -10,6 +10,30 @@ SATORBIT.jl is a Julia package designed for simulating satellite orbits around E
 
 Note: This project is not affiliated with NASA, NRL, or the GFZ German Research Centre for Geosciences in any way.
 
+## Installation
+
+### Method 1: Direct Package Addition
+1. Open julia and enter the package manager (Pkg) mode by pressing `]`.
+2. Add the SATORBIT package using the following command:
+   ```julia
+   add git@github.com:schuettem/SATORBIT.git
+   ```
+### Method 2: Cloning the Repository
+1. Clone the repository:
+   ```bash
+      git clone git@github.com:schuettem/SATORBIT.git
+   ```
+4. Navigate to the project directory:
+   ```bash
+   cd SATORBIT
+   ```
+5. package manager (Pkg) mode by pressing `]`.
+6. Activate the project environment and install dependencies:
+   ```julia
+      activate .
+      instantiate
+   ```
+
 ## Acknowledgements
 This package uses the following packages and models:
 - PyNRLMSISE-00:
