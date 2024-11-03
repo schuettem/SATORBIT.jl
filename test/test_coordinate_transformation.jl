@@ -23,7 +23,6 @@
 
         # Convert back to COES
         a, e, i, Ω, ω, f = SATORBIT.eci2coes(r_eci_expected, v_eci_expected, μ)
-        println("a: $a, e: $e, i: $i, Ω: $Ω, ω: $ω, f: $f")
         @test a_original ≈ a atol=1 # Semi-major axis
         @test e_original ≈ e atol=1 # Eccentricity
         @test i_original ≈ i atol=1 # Inclination
@@ -56,7 +55,6 @@
 
         # Convert back to COES
         a, e, i, Ω, ω, f = SATORBIT.eci2coes(r_eci_expected, v_eci_expected, μ)
-        println("a: $a, e: $e, i: $i, Ω: $Ω, ω: $ω, f: $f")
         @test a_original ≈ a atol=1 # Semi-major axis
         @test e_original ≈ e atol=1 # Eccentricity
         @test i_original ≈ i atol=1 # Inclination
