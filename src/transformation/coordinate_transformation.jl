@@ -46,9 +46,13 @@ function eci2coes(r::Vector{Float64}, v::Vector{Float64}, μ::Float64)
     n_mag = norm(n)
 
     # right ascension of the ascending node
-    Ω = acos(n[1] / n_mag)
-    if n[2] < 0
-        Ω = 2 * π - Ω
+    if n_mag ≈ 0
+        Ω = 0 # Ω is undefined if n_mag = 0 (i.e. the orbit is equatorial)
+    else
+        Ω = acos(n[1] / n_mag)
+        if n[2] < 0
+            Ω = 2 * π - Ω
+        end
     end
 
     # Eccentricity vector
@@ -56,15 +60,42 @@ function eci2coes(r::Vector{Float64}, v::Vector{Float64}, μ::Float64)
     e = norm(e_vec)
 
     # Argument of periapsis
-    ω = acos(dot(n, e_vec) / (n_mag * e))
-    if e_vec[3] < 0
-        ω = 2 * π - ω
+    if e < 1e-5
+        ω = 0 # ω is undefined if e = 0
+    else
+        if n_mag ≈ 0 # orbit is equatorial
+            ω = atan(e_vec[2], e_vec[1])
+            if ω < 0
+                ω += 2 * π
+            end
+        else
+            ω = acos(dot(n, e_vec) / (n_mag * e))
+            if e_vec[3] < 0
+                ω = 2 * π - ω
+            end
+        end
     end
 
     # true anomaly
-    f = acos(dot(e_vec, r) / (e * r_mag))
-    if dot(r, v) < 0
-        f = 2 * π - f
+    if e < 1e-5
+        if n_mag ≈ 0 # n ≠ 0
+            # Special case for circular equatorial orbits
+            u = atan(r[2], r[1])
+            if u < 0
+                u += 2 * π
+            end
+            f = u
+        else
+            f = acos(dot(n, r) / (n_mag * r_mag))
+            if r[3] < 0
+                f = 2 * π - f
+            end
+        end
+    else # e ≠ 0
+        f = acos(dot(e_vec, r) / (e * r_mag))
+        if dot(r, v) < 0
+            f = 2 * π - f
+        end
     end
 
     # Semi-major axis
