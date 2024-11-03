@@ -31,11 +31,13 @@ J2 = false
 aero = false
 disturbances = SATORBIT.Pertubations(J2, aero)
 
+orbit = SATORBIT.Orbit(satellite, central_body, init_orbit, start_date)
+
 # Simulation Parameters
 nbr_orbits = 2 # Number of orbits to simulate
-nbr_steps = 200 # Number of steps per orbit
+nbr_steps = 200 # Number of total steps
 
-orbit = SATORBIT.simulate_orbit(satellite, central_body, init_orbit, start_date, disturbances, nbr_orbits, nbr_steps)
+SATORBIT.simulate_orbit!(orbit, disturbances, nbr_orbits, nbr_steps)
 
 # SATORBIT.plot_3d(orbit)
 # SATORBIT.plot_ground_track(orbit)

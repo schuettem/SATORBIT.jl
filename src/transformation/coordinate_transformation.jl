@@ -11,10 +11,12 @@ function coes2eci(orbit::COES, μ::Float64)
 
     p = a * (1 - e^2) # semi-latus rectum
     r = p / (1 + e * cos(f)) # distance from the central body
-    v = sqrt(μ * (2/r - 1/a))
 
-    r_pqw = [r * cos(f), r * sin(f), 0.0] # position in the perifocal frame
-    v_pqw = [-v * sin(f), v * (e + cos(f)), 0.0] # velocity in the perifocal frame
+    # Position in the perifocal frame
+    r_pqw = [r * cos(f), r * sin(f), 0.0]
+
+    # Velocity in the perifocal frame
+    v_pqw = sqrt(μ / p) * [-sin(f), e + cos(f), 0.0]
 
     R_3_Ω = [cos(Ω) -sin(Ω) 0.0; sin(Ω) cos(Ω) 0.0; 0.0 0.0 1.0]
     R_1_i = [1.0 0.0 0.0; 0.0 cos(i) -sin(i); 0.0 sin(i) cos(i)]
@@ -30,6 +32,7 @@ end
 
 function eci2coes(r::Vector{Float64}, v::Vector{Float64}, μ::Float64)
     r_mag = norm(r)
+    v_mag = norm(v)
 
     # specific angular momentum vector
     h = cross(r, v)
@@ -38,12 +41,8 @@ function eci2coes(r::Vector{Float64}, v::Vector{Float64}, μ::Float64)
     # inclination
     i = acos(h[3] / h_mag)
 
-    # eccentricity
-    e_vec = ((norm(v)^2 - μ / r_mag) * r - dot(r, v) * v) / μ
-    e = norm(e_vec)
-
-    # pointing vector
-    n = cross([0.0, 0.0, 1.0], h)
+    # Node vector
+    n = [-h[2], h[1], 0.0]
     n_mag = norm(n)
 
     # right ascension of the ascending node
@@ -52,7 +51,11 @@ function eci2coes(r::Vector{Float64}, v::Vector{Float64}, μ::Float64)
         Ω = 2 * π - Ω
     end
 
-    # argument of periapsis
+    # Eccentricity vector
+    e_vec = (1 / μ) * ((v_mag^2 - μ / r_mag) * r - dot(r, v) * v)
+    e = norm(e_vec)
+
+    # Argument of periapsis
     ω = acos(dot(n, e_vec) / (n_mag * e))
     if e_vec[3] < 0
         ω = 2 * π - ω
@@ -64,10 +67,10 @@ function eci2coes(r::Vector{Float64}, v::Vector{Float64}, μ::Float64)
         f = 2 * π - f
     end
 
-    # semi-major axis
-    a = r_mag * (1 + e * cos(f)) / (1 - e^2)
+    # Semi-major axis
+    a = 1 / (2 / r_mag - v_mag^2 / μ)
 
-    return (a, e, rad2deg(i), rad2deg(Ω), rad2deg(ω), rad2deg(f))
+    return a, e, rad2deg(i), rad2deg(Ω), rad2deg(ω), rad2deg(f)
 end
 
 """
@@ -76,6 +79,16 @@ end
 function ecef2geo(r::Vector{Float64})
     r_mag, lon, lat = reclat(r)
     return rad2deg(lat), rad2deg(lon)
+end
+
+"""
+    transform geodetic coordinates to ecef (earth-centered, earth-fixed)
+"""
+function geo2ecef(lat::Float64, lon::Float64, r_mag::Float64)
+    r_x = r_mag * cos(lat) * cos(lon)
+    r_y = r_mag * cos(lat) * sin(lon)
+    r_z = r_mag * sin(lat)
+    return [r_x, r_y, r_z]
 end
 
 """

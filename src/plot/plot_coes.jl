@@ -1,12 +1,23 @@
-function plot_coes(orbit::OrbitPropagation)
-    CairoMakie.activate!()
+function plot_coes(orbit::Orbit)
 
-    a = [coes.a for coes in orbit.coes]
-    e = [coes.e for coes in orbit.coes]
-    i = [coes.i for coes in orbit.coes]
-    Ω = [coes.Ω for coes in orbit.coes]
-    ω = [coes.ω for coes in orbit.coes]
-    f = [coes.f for coes in orbit.coes]
+    # Transform eci to coes
+    a = Float64[]
+    e = Float64[]
+    i = Float64[]
+    Ω = Float64[]
+    ω = Float64[]
+    f = Float64[]
+    for eci in orbit.eci
+        a_i, e_i, i_i, Ω_i, ω_i, f_i = eci2coes(eci.r, eci.v, orbit.central_body.μ)
+        push!(a, a_i)
+        push!(e, e_i)
+        push!(i, i_i)
+        push!(Ω, Ω_i)
+        push!(ω, ω_i)
+        push!(f, f_i)
+    end
+
+    CairoMakie.activate!()
 
     prop_time = orbit.time_et .- orbit.time_et[1]
 
