@@ -1,4 +1,4 @@
-function plot_3d(orbit::OrbitPropagation)
+function plot_3d(orbit::Orbit)
     GLMakie.activate!()
 
     fig = Figure()
