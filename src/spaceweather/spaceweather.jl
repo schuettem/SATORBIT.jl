@@ -9,9 +9,7 @@
                  and derived indices of geomagnetic activity. Space Weather, https://doi.org/10.1029/2020SW002641
     LICENSE: CC BY 4.0, except for the sunspot numbers contained in this file, which have the CC BY-NC 4.0 license
 """
-function spaceweather()
-    # Example usage
-    file_path = "src/atmosphere/Kp_ap_Ap_SN_F107_since_1932.txt"
+function spaceweather(file_path::String)
     # Load the data into a DataFrame
     df = DataFrame(CSV.File(file_path; delim=' ', ignorerepeated=true, header=40))
     # Generate row keys in yyyy-mm-dd format
@@ -48,62 +46,46 @@ end
 """
     Get the spaceweather data at a specific date
 """
-
-function spaceweather_at(date::DateTime, df::DataFrame)
+function get_spaceweather(date::DateTime)
+    date = get_year_month_day(date)
     row_nbr = get_rownbr(date)
 
     # Access the data for a specific date
-    row = df[row_nbr, :]
-    return row
-end
+    row = spaceweather_data[][row_nbr, :]
 
-"""
-    Solar flux F10.7 at a specific date
-"""
-function f107adj_day(date::DateTime, df::DataFrame)
-    date = get_year_month_day(date)
+    # Calculate the 81 day average of the solar flux F10.7
+    f107adj = row["F10.7adj"] # Solar flux F10.7
+    f107adj_81 = f107adj_81avg(date)
 
-    row = spaceweather_at(date, df)
-    return row["F10.7adj"]
+    # Calculate the magnetic index Ap
+    ap = row["Ap"]
+    return f107adj, f107adj_81, ap
 end
 
 """
     Solar flux F10.7 81 day average at a specific date
 """
-function f107adj_81avg(date::DateTime, df::DataFrame)
-    date = get_year_month_day(date)
-
-    dates = df[:, 1]
+function f107adj_81avg(date::DateTime)
 
     # get 40 days before and 40 days after the date
     before = date - Dates.Day(40)
     after = date + Dates.Day(40)
 
-    nbr_rows = size(df, 1)
+    nbr_rows = size(spaceweather_data[], 1)
     row_nbr_before = get_rownbr(before)
     row_nbr_after = get_rownbr(after)
 
     # if the date is before the first date or after the last date, return the data for the date
     if row_nbr_before < 1 || row_nbr_after > nbr_rows
-        return f107adj_day(date, df)
+        return f107adj_day(date)
     end
 
     # get the data for the 81 days
-    f107adj_days = df[row_nbr_before:row_nbr_after, "F10.7adj"]
+    f107adj_days = spaceweather_data[][row_nbr_before:row_nbr_after, "F10.7adj"]
 
     # calculate the average
     f107adj_81avg = mean(f107adj_days)
     return f107adj_81avg
-end
-
-"""
-    Magnetic index Ap at a specific date
-"""
-function ap_at(date::DateTime, df::DataFrame)
-    date = get_year_month_day(date)
-
-    row = spaceweather_at(date, df)
-    return row["Ap"]
 end
 
 function get_year_month_day(date::DateTime)

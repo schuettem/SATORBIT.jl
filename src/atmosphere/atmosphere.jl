@@ -1,3 +1,13 @@
+"""
+    Calculate the atmosphere at a given altitude, latitude, longitude, and time
+
+    altitude: altitude in meters
+    latitude: latitude in degrees
+    longitude: longitude in degrees
+    f107a: 81-day average of F10.7 flux
+    f107: daily F10.7 flux
+    ap: magnetic index
+"""
 function calc_atmosphere(date_time::DateTime, altitude, latitude, longitude, f107, f107a, ap)
     return nrlmsise00.msise_flat(date_time, altitude / 1e3, latitude, longitude, f107, f107a, ap)
 end

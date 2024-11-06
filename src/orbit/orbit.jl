@@ -1,3 +1,9 @@
+struct Satellite
+    c_d::Float64
+    area::Float64
+    mass::Float64
+end
+
 struct COES # Classical Orbital Elements
     a::Float64 # semi-major axis
     e::Float64 # eccentricity
@@ -27,21 +33,30 @@ struct Atmosphere
     v_ref::Float64
 end
 
-mutable struct OrbitPropagation
-    coes::Vector{COES}
+mutable struct Orbit
+    satellite::Satellite
+    central_body::Planet
     eci::Vector{ECI}
-    geo::Vector{GEO}
-    ecef::Vector{ECEF}
-    atmosphere_data::Vector{Atmosphere}
     time_utc::Vector{DateTime}
     time_et::Vector{Float64}
+end
+
+function Orbit(satellite::Satellite, central_body::Planet, eci::ECI, time_utc::DateTime, time_et::Float64)
+    return Orbit(satellite, central_body, [eci], [time_utc], [time_et])
+end
+
+function Orbit(satellite::Satellite, central_body::Planet, coes::COES, time_utc::DateTime)
+    r, v = coes2eci(coes, central_body.μ)
+    eci = ECI(r, v)
+    time_et = utc2et(time_utc)
+    return Orbit(satellite, central_body, [eci], [time_utc], [time_et])
 end
 
 """
     Equation of motion for the satellite. This function will be used by the differential equation solver.
 """
 function equations_of_motion!(du, u, p, t)
-    central_body, satellite, disturbances, spaceweather_df = p
+    central_body, satellite, disturbances = p
     r = u[1:3]
     v = u[4:6]
 
@@ -50,14 +65,14 @@ function equations_of_motion!(du, u, p, t)
     utc_time = DateTime(utc_time, "yyyy-mm-ddTHH:MM:SS")
 
     # calculate the acceleration
-    a = acceleration(central_body, satellite, r, v, disturbances, spaceweather_df, utc_time)
+    a = acceleration(central_body, satellite, r, v, disturbances, utc_time)
 
     # update the derivatives
     du[1:3] = v
     du[4:6] = a
 end
 
-function set_parameters!(orbit::OrbitPropagation, eci::ECI, central_body::Earth, time_et, time_utc::DateTime, spaceweather_df::DataFrame)
+function set_parameters!(orbit::Orbit, eci::ECI, time_et::Float64, time_utc::DateTime)
     # et:
     push!(orbit.time_et, time_et)
 
@@ -66,26 +81,4 @@ function set_parameters!(orbit::OrbitPropagation, eci::ECI, central_body::Earth,
 
     # ECI:
     push!(orbit.eci, eci)
-
-    # COES:
-    a, e, i, Ω, ω, f = eci2coes(eci.r, eci.v, central_body.μ)
-    push!(orbit.coes, COES(a, e, i, Ω, ω, f))
-
-    # ECEF:
-    r_ecef = eci2ecef(eci.r, time_utc)
-    push!(orbit.ecef, ECEF(r_ecef))
-
-    # Geodetic:
-    latitude, longitude = ecef2geo(r_ecef)
-    push!(orbit.geo, GEO(latitude, longitude))
-
-    # Atmospheric data:
-    f107a = f107adj_81avg(time_utc, spaceweather_df)
-    f107 = f107adj_day(time_utc, spaceweather_df)
-    ap = ap_at(time_utc, spaceweather_df)
-    atm = calc_atmosphere(time_utc, norm(eci.r) - central_body.radius, latitude, longitude, f107a, f107, ap)
-    n_o = get_o_density(atm)
-    T = get_temperature(atm)
-    v_ref = rel_velocity_to_atm(eci.r, eci.v, central_body, time_utc, latitude, longitude, 0.0, f107a, f107, [0.0, ap])
-    push!(orbit.atmosphere_data, Atmosphere(n_o, T, v_ref))
 end

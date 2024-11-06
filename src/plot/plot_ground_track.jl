@@ -1,12 +1,16 @@
-function plot_ground_track(orbit::OrbitPropagation)
-    CairoMakie.activate!()
+function plot_ground_track(orbit::Orbit)
 
+    # Transform eci to lat and lon
     latitude = Float64[]
     longitude = Float64[]
-    for geo in orbit.geo
-        push!(latitude, geo.latitude)
-        push!(longitude, geo.longitude)
+    for (i, eci) in enumerate(orbit.eci)
+        r_ecef = eci2ecef(eci.r, orbit.time_utc[i])
+        lat, lon = ecef2geo(r_ecef)
+        push!(latitude, lat)
+        push!(longitude, lon)
     end
+
+    CairoMakie.activate!()
 
     fig = Figure()
     ax = Axis(fig[1, 1], xlabel = "Longitude", ylabel = "Latitude")
