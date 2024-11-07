@@ -13,7 +13,7 @@ function acceleration(central_body::Earth, satellite::Satellite, r_eci::Vector{F
     if disturbances.aero
         # Atmospheric data:
         f107, f107a, ap = get_spaceweather(time_utc)
-        atm = calc_atmosphere(time_utc, norm(r_eci) - central_body.radius, latitude, longitude, f107a, f107, ap)
+        atm = get_nrlmsise00_data(time_utc, norm(r_eci) - central_body.radius, latitude, longitude, f107a, f107, ap)
         ρ = get_total_mass_density(atm)
         v_rel_norm = rel_velocity_to_atm(r_eci, v_eci, central_body, time_utc, latitude, longitude, 0.0, f107a, f107, [0.0, ap])
         a_drag = drag(satellite, v_rel_norm, ρ)

@@ -22,14 +22,14 @@ function plot_atmosphere(orbit::Orbit)
 
         eci = orbit.eci[i]
         time_utc = orbit.time_utc[i]
-        r_ecef = eci2ecef(eci.r, time_utc)
-        latitude, longitude = ecef2geo(r_ecef)
 
-        f107, f107a, ap = get_spaceweather(time_utc)
-        atm = calc_atmosphere(time_utc, norm(eci.r) - orbit.central_body.radius, latitude, longitude , f107a, f107, ap)
-        n_o = get_o_density(atm)
-        T = get_temperature(atm)
-        v_rel = rel_velocity_to_atm(eci.r, eci.v, orbit.central_body, time_utc, latitude, longitude, 0.0, f107a, f107, [0.0, ap])
+        atm = get_atmosphere_data(eci.r, time_utc, orbit.central_body)
+
+        n_o = atm.o_density
+        T = atm.temperature
+        v_atm = atm.velocity
+        v_orbit = eci.v
+        v_rel = norm(v_orbit - v_atm)
         push!(temperature, T)
         push!(n_aox, n_o)
         push!(v_relative, v_rel)
@@ -52,5 +52,5 @@ function plot_atmosphere(orbit::Orbit)
     end_date = orbit.time_utc[end]
     Label(fig[0, :], text = "$(start_date) to $(end_date)", fontsize = 24, tellwidth = false)
 
-    fig
+    display(fig)
 end
