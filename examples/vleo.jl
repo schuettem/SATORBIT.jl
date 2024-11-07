@@ -18,14 +18,14 @@ radius_apogee = central_body.radius + alt_apogee
 e = (radius_apogee - radius_perigee) / (radius_apogee + radius_perigee) # Eccentricity
 a = (radius_perigee + radius_apogee) / 2.0 # Semi-major axis
 
-i = 0.0 # Inclination (degrees)
+i = 96.0 # Inclination (degrees)
 f = 40.0 # True Anomaly (degrees)
 Ω = 106.0 # Right Ascension of the Ascending Node (degrees)
 ω = 234.0 # Argument of Periapsis (degrees)
 
 init_orbit = SATORBIT.COES(a, e, i, Ω, ω, f)
 
-start_date = SATORBIT.DateTime(2020, 8, 29, 0, 0, 0)
+start_date = SATORBIT.DateTime(2020, 5, 10, 12, 0, 0)
 
 J2 = false
 aero = false

@@ -1,5 +1,55 @@
+struct Atmosphere
+    he_density::Float64
+    o_density::Float64
+    n2_density::Float64
+    o2_density::Float64
+    ar_density::Float64
+    total_mass_density::Float64
+    h_density::Float64
+    n_density::Float64
+    anomalous_o_density::Float64
+    temperature::Float64
+    exo_temperature::Float64
+    velocity::Vector{Float64}
+
+    function Atmosphere(atm, velocity)
+        he_density = get_he_density(atm)
+        o_density = get_o_density(atm)
+        n2_density = get_n2_density(atm)
+        o2_density = get_o2_density(atm)
+        ar_density = get_ar_density(atm)
+        total_mass_density = get_total_mass_density(atm)
+        h_density = get_h_density(atm)
+        n_density = get_n_density(atm)
+        anomalous_o_density = get_anomalous_o_density(atm)
+        temperature = get_temperature(atm)
+        exo_temperature = get_exo_temperature(atm)
+        new(he_density, o_density, n2_density, o2_density, ar_density, total_mass_density, h_density, n_density, anomalous_o_density, temperature, exo_temperature, velocity)
+    end
+end
+
 """
-    Calculate the atmosphere at a given altitude, latitude, longitude, and time
+    Get the atmospheric data from the NRLMSISE-00 model and HWM14 model
+
+    r: position vector of the satellite in the ECI frame
+    date_time: date and time in UTC
+    central_body: central body
+"""
+function get_atmosphere_data(r::Vector{Float64}, date_time::DateTime, central_body::Earth)
+    r_ecef = eci2ecef(r, date_time) # r in ECEF
+    latitude, longitude = ecef2geo(r_ecef) # latitude and longitude in degrees
+    altitude = norm(r) - central_body.radius # altitude in meters
+
+    f107, f107a, ap = get_spaceweather(date_time)
+    atm = get_nrlmsise00_data(date_time, altitude, latitude, longitude, f107, f107a, ap)
+
+    v_atm_rot = cross(central_body.atm_rot_vec, r)
+    v_wind = wind(date_time, altitude / 1e3, latitude, longitude, 0.0, f107, f107a, [0.0, ap]) # v_wind in ECI
+    velocity = v_atm_rot + v_wind # velocity of the atmosphere in the ECI frame
+    return Atmosphere(atm, velocity)
+end
+"""
+    Get the NRLMSISE00 data at a given altitude, latitude, longitude, and time
 
     altitude: altitude in meters
     latitude: latitude in degrees
@@ -7,15 +57,22 @@
     f107a: 81-day average of F10.7 flux
     f107: daily F10.7 flux
     ap: magnetic index
+
+    return: NRLMSISE00 data as an array
 """
-function calc_atmosphere(date_time::DateTime, altitude, latitude, longitude, f107, f107a, ap)
+function get_nrlmsise00_data(date_time::DateTime, altitude, latitude, longitude, f107, f107a, ap)
     return nrlmsise00.msise_flat(date_time, altitude / 1e3, latitude, longitude, f107, f107a, ap)
 end
 
 """
     Calculate the horizontal wind at a given altitude, latitude, longitude, and time
+
+    date: date and time in UTC
+    alt: altitude in km
+    glat: geodetic latitude in degrees
+    glon: geodetic longitude in degrees
 """
-function wind(date::DateTime, alt::Float64, glat::Float64, glon::Float64, stl::Float64, f107a::Float64, f107::Float64, ap::Vector{Float64})
+function wind(date::DateTime, alt::Float64, glat::Float64, glon::Float64, stl::Float64, f107::Float64, f107a::Float64, ap::Vector{Float64})
     # convert date to iyd and sec
     iyd, sec = HWM14.datetime2iydsec(date)
 
@@ -24,7 +81,7 @@ function wind(date::DateTime, alt::Float64, glat::Float64, glon::Float64, stl::F
     # transform Vector{Float32} to Vector{Float64}
     w = convert(Vector{Float64}, w)
 
-    # convert from geodetic to ECEF
+    # convert from geo to ECI
     w = wind2eci(w, glat, glon, date)
     return w
 end
@@ -36,16 +93,41 @@ function atmosphere_rotation(r::Vector{Float64}, central_body::Earth)
     return cross(central_body.atm_rot_vec, r)
 end
 
-function rel_velocity_to_atm(r::Vector{Float64}, v::Vector{Float64}, central_body::Earth, date::DateTime, lat::Float64, lon::Float64, stl::Float64, f107a::Float64, f107::Float64, ap::Vector{Float64})
+"""
+    Calculate the relative velocity of the satellite with respect to the atmosphere
+
+    r: position vector of the satellite in the ECI frame
+    v: velocity vector of the satellite in the ECI frame
+    central_body: central body
+    date: date and time in UTC
+"""
+function rel_velocity_to_atm(r::Vector{Float64}, v::Vector{Float64}, central_body::Earth, date_time::DateTime, lat::Float64, lon::Float64, stl::Float64, f107a::Float64, f107::Float64, ap::Vector{Float64})
     # ALtitude of the satellite in km
     alt = norm(r) - central_body.radius
 
     # Relative velocity with respect to the atmosphere
     v_atm_rot = cross(central_body.atm_rot_vec, r) # r in ECI
-    v_wind = wind(date, alt, lat, lon, stl, f107a, f107, ap) # v_wind in ECI
+    v_wind = wind(date_time, alt, lat, lon, stl, f107a, f107, ap) # v_wind in ECI
     v_rel = v - v_atm_rot - v_wind # v , r in ECI
     v_rel_norm = norm(v_rel)
     return v_rel_norm
+end
+
+"""
+    Calculate the atmospheric conditions at each time step in the orbit
+"""
+function atmosphere_orbit_data(orbit::Orbit)
+    nrlmsise00_data = Atmosphere[] # List of atmosphere data at each time step in the orbit
+
+    # Calculate the atmospheric conditions:
+    for (i, utc) in enumerate(orbit.time_utc)
+
+        eci = orbit.eci[i]
+        atm = get_atmosphere_data(eci.r, utc, orbit.central_body)
+
+        push!(nrlmsise00_data, atm)
+    end
+    return nrlmsise00_data
 end
 
 include("get_densities_temp.jl")

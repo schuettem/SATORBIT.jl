@@ -27,12 +27,6 @@ struct ECEF
     r::Vector{Float64}
 end
 
-struct Atmosphere
-    n_o::Float64
-    T::Float64
-    v_ref::Float64
-end
-
 mutable struct Orbit
     satellite::Satellite
     central_body::Planet
