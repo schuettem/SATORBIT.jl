@@ -11,7 +11,7 @@ SATORBIT.jl is a Julia package designed for simulating satellite orbits around E
 Note: This project is not affiliated with NASA, NRL, NAIF, or the GFZ German Research Centre for Geosciences in any way.
 
 ## Prerequisites
- - The package [HWM14](https://github.com/schuettem/HWM14) should be added automatically if you install all recorded dependencies via `instantiate` in the package manager.
+ - The package [HWM14](https://github.com/schuettem/HWM14) has to be added manually.
  - The python module for the NRLMSISE-00 atmospheric model is installed automatically via `pip`, if it is not already installed. Make sure that `pip` is installed.
 
 ## Installation
