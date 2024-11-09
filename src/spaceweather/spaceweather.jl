@@ -48,18 +48,33 @@ end
 """
 function get_spaceweather(date::DateTime)
     date = get_year_month_day(date)
-    row_nbr = get_rownbr(date)
+    todays_date = today()
+    # check if the date is in the future
+    if date - todays_date >= Dates.Day(0)
+        if date - todays_date >= Dates.Day(45)
+            error("The date is more than 45 days in the future. Space weather data is not available.")
+        else
+            get_spaceweather_forecast(date)
+            return f107, f107, ap
+        end
+    else
+        row_nbr = get_rownbr(date)
+        previous_date = date - Dates.Day(1)
+        previous_date = get_year_month_day(previous_date)
+        row_nbr_prev = get_rownbr(previous_date)
 
-    # Access the data for a specific date
-    row = spaceweather_data[][row_nbr, :]
+        # Access the data for a specific date
+        row = spaceweather_data[][row_nbr, :]
+        row_prev = spaceweather_data[][row_nbr_prev, :]
 
-    # Calculate the 81 day average of the solar flux F10.7
-    f107adj = row["F10.7adj"] # Solar flux F10.7
-    f107adj_81 = f107adj_81avg(date)
+        # Calculate the 81 day average of the solar flux F10.7
+        f107adj = row_prev["F10.7adj"] # Solar flux F10.7 of the previous day
+        f107adj_81 = f107adj_81avg(date) # Solar flux F10.7 81 day average
 
-    # Calculate the magnetic index Ap
-    ap = row["Ap"]
-    return f107adj, f107adj_81, ap
+        # Calculate the magnetic index Ap
+        ap = row["Ap"]
+        return f107adj, f107adj_81, ap
+    end
 end
 
 """

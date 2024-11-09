@@ -47,12 +47,63 @@ function check_and_install_spaceweather()
     file_path = joinpath(@__DIR__,"spaceweather/Kp_ap_Ap_SN_F107_since_1932.txt")
     if isfile(file_path)
         try
+            # check if spaceweather is up to date
+            todays_date = today()
+            file_stat = stat(file_path)
+            last_modified = file_stat.mtime
+            last_modified_datetime = unix2datetime(last_modified)
+            last_modified_date = Date(last_modified_datetime)
+            if todays_date - last_modified_date > Dates.Day(1)
+                @info "Spaceweather data is outdated. Trying to update spaceweather data..."
+                download("https://kp.gfz-potsdam.de/app/files/Kp_ap_Ap_SN_F107_since_1932.txt", file_path)
+                @info "Spaceweather data updated."
+            end
             @info "loading spaceweather data."
             return spaceweather(file_path)
         catch e
             @error("loading spaceweather data failed.")
         end
     else
-        @error("Spaceweather data is missing. File not found: $file_path")
+        try
+            @info("Spaceweather data not found. Downloading spaceweather data...")
+            download("https://kp.gfz-potsdam.de/app/files/Kp_ap_Ap_SN_F107_since_1932.txt", file_path)
+            @info("Spaceweather data downloaded.")
+            return spaceweather(file_path)
+        catch e
+            @error("Downloading spaceweather data failed.")
+        end
+    end
+end
+
+function check_and_install_spaceweather_forecast()
+    # Check if spaceweather data is available
+    file_path = joinpath(@__DIR__,"spaceweather/45-day-ap-forecast.txt")
+    if isfile(file_path)
+        try
+            # check if spaceweather is up to date
+            todays_date = today()
+            file_stat = stat(file_path)
+            last_modified = file_stat.mtime
+            last_modified_datetime = unix2datetime(last_modified)
+            last_modified_date = Date(last_modified_datetime)
+            if todays_date - last_modified_date > Dates.Day(1)
+                @info "Spaceweather forecast data is outdated. Trying to update spaceweather data..."
+                download("https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt", file_path)
+                @info "Spaceweather forecast data updated."
+            end
+            @info "loading spaceweather forecast data."
+            return spaceweather_forecast(file_path)
+        catch e
+            @error("loading spaceweather forecast data failed.")
+        end
+    else
+        try
+            @info("Spaceweather forecast data not found. Downloading spaceweather forecast data...")
+            download("https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt", file_path)
+            @info("Spaceweather forecast data downloaded.")
+            return spaceweather_forecast(file_path)
+        catch e
+            @error("Downloading spaceweather forecast data failed.")
+        end
     end
 end

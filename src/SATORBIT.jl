@@ -13,6 +13,7 @@ using OrdinaryDiffEq
 using Pkg
 using PyCall
 using HWM14
+using Base.Filesystem: stat
 
 # Include files:
 include("planetary_data/earth.jl")
@@ -22,6 +23,7 @@ include("transformation/coordinate_transformation.jl")
 
 include("atmosphere/atmosphere.jl")
 include("spaceweather/spaceweather.jl")
+include("spaceweather/spaceweather_forecast.jl")
 include("orbit/acceleration.jl")
 
 include("plot/plot_3d.jl")
@@ -38,12 +40,14 @@ const leapseconds_kernel = joinpath(@__DIR__, "spice_kernels/latest_leapseconds.
 const earth_kernel = joinpath(@__DIR__, "spice_kernels/earth_620120_240827.bpc") # Earth orientation history kernel
 
 const spaceweather_data = Ref{DataFrame}(DataFrame())
+const spaceweather_forecast_data = Ref{DataFrame}(DataFrame())
 
 function __init__()
     atm_model = check_and_install_nrlmsise00() # Check and install NRLMSISE-00 package
     copy!(nrlmsise00, atm_model)
     check_and_install_spice(leapseconds_kernel, earth_kernel) # Check and install SPICE
     spaceweather_data[] = check_and_install_spaceweather() # Check and install spaceweather data
+    spaceweather_forecast_data[] = check_and_install_spaceweather_forecast() # Check and install spaceweather forecast data
 end
 
 

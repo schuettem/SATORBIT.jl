@@ -4,11 +4,14 @@ SATORBIT.jl is a Julia package designed for simulating satellite orbits around E
 ## Features
 - **J2 Disturbance**: Account for the J2 perturbation by assuming that the Earth is an ellipsoid.
 - **Atmospheric Drag**: Incorporate atmospheric drag in the calculations using the atmospheric data from the NRLMSISE-00 model by the US Naval Research Laboratory (NRL).
-- **Space Weather Data**: Utilize space weather data from the GFZ German Research Centre for Geosciences as input for the atmospheric model.
+- **Space Weather Data**:
+  - Historic data: From the GFZ German Research Centre for Geosciences.
+  - Forecast data: From the Space Weather Prediction Center National Oceanic and Atmospheric Administration (NOAA).
+
 - **SPICE Kernels**: SPICE kernels are used for precise ephemeris data and transformations from NASA Navigation and Ancillary Information Facility (NAIF).
 - **HWM14**: The Horizontal Wind Model 2014 (HWM14) from the Naval Research Laboratory (NRL) is used to account for atmospheric wind.
 
-Note: This project is not affiliated with NASA, NRL, NAIF, or the GFZ German Research Centre for Geosciences in any way.
+Note: This project is not affiliated with NASA, NRL, NAIF, NOAA, or the GFZ in any way.
 
 ## Prerequisites
  - The package [HWM14](https://github.com/schuettem/HWM14) should be added automatically if you install all recorded dependencies via `instantiate` in the package manager.
@@ -39,10 +42,15 @@ This package uses the following packages and models:
   - Earth orientation kernel: High accuracy, historical kernel from 1962-01-01 till 2024-08-27. Downloaded from https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/
   - Leap seconds kernel: Dowloaded from https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/
 
-- Space weather data:
+- Historical space weather data:
   - This data is used as input for the atmospheric model (F10.7, F10.7a, ap).
   - Data source: [Geomagnetic Observatory Niemegk, GFZ German Research Centre for Geosciences](https://www.gfz-potsdam.de/)
-  - The file Kp_ap_Ap_SN_F107_since_1932.txt was downloaded on Oct. 29th, 2024 from https://kp.gfz-potsdam.de/app/files/Kp_ap_Ap_SN_F107_since_1932.txt
+  - The file `Kp_ap_Ap_SN_F107_since_1932.txt` will be downloaded from [https://kp.gfz-potsdam.de/app/files/Kp_ap_Ap_SN_F107_since_1932.txt](https://kp.gfz-potsdam.de/app/files/Kp_ap_Ap_SN_F107_since_1932.txt) to ensure it remains up to date.
+
+ - Forecast space weather data (45-days forecast):
+   - This data is used as input for the atmospheric model (F10.7, no 81 day average, ap).
+   - Data source: ["https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt"]("https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt")
+   - The file `45-day-ap-forecast.txt` will be downloaded from ["https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt"]("https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt") to ensure it remains up to date.
 
 ## References
 - Space weather:<br>
