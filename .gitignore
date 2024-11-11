@@ -1,2 +1,9 @@
 .vscode
 Manifest.toml
+
+src/spaceweather/45-day-ap-forecast.txt
+src/spaceweather/Kp_ap_Ap_SN_F107_since_1932.txt
+src/spaceweather/*f10-prd.txt
+
+src/spice_kernels/*combined.bpc
+src/spice_kernels/latest_leapseconds.tls

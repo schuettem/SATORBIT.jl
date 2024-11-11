@@ -13,6 +13,8 @@ using OrdinaryDiffEq
 using Pkg
 using PyCall
 using HWM14
+using Base.Filesystem: stat
+using HTTP
 
 # Include files:
 include("planetary_data/earth.jl")
@@ -22,6 +24,9 @@ include("transformation/coordinate_transformation.jl")
 
 include("atmosphere/atmosphere.jl")
 include("spaceweather/spaceweather.jl")
+include("spaceweather/spaceweather_historical.jl")
+include("spaceweather/spaceweather_daily_forecast.jl")
+include("spaceweather/spaceweather_monthly_forecast.jl")
 include("orbit/acceleration.jl")
 
 include("plot/plot_3d.jl")
@@ -32,20 +37,30 @@ include("plot/plot_coes.jl")
 include("check_and_install.jl")
 
 const nrlmsise00 = PyNULL()
-# The SPICE kernels used in this script are provided by the NASA Navigation and Ancillary Information Facility (NAIF).
-# Data Source: NAIF Generic Kernels (https://naif.jpl.nasa.gov/naif/data_generic.html).
-const leapseconds_kernel = joinpath(@__DIR__, "spice_kernels/latest_leapseconds.tls")
-const earth_kernel = joinpath(@__DIR__, "spice_kernels/earth_620120_240827.bpc") # Earth orientation history kernel
 
-const spaceweather_data = Ref{DataFrame}(DataFrame())
+const leapseconds_kernel = joinpath(@__DIR__, "spice_kernels/latest_leapseconds.tls")
+const earth_kernel = joinpath(@__DIR__, "spice_kernels/earth_1962_240827_2124_combined.bpc") # Earth orientation history and predicted kernel
+
+const spaceweather_historical_data = Ref{DataFrame}(DataFrame())
+const spaceweather_daily_forecast_data = Ref{DataFrame}(DataFrame())
+const spaceweather_monthly_forecast_data = Ref{DataFrame}(DataFrame())
 
 function __init__()
-    atm_model = check_and_install_nrlmsise00() # Check and install NRLMSISE-00 package
+    # NRLMSISE-00 model
+    atm_model = check_and_install_nrlmsise00()
     copy!(nrlmsise00, atm_model)
-    check_and_install_spice(leapseconds_kernel, earth_kernel) # Check and install SPICE
-    spaceweather_data[] = check_and_install_spaceweather() # Check and install spaceweather data
-end
 
+    # SPICE
+    # The SPICE kernels used in this script are provided by the NASA Navigation and Ancillary Information Facility (NAIF).
+    # Data Source: NAIF Generic Kernels (https://naif.jpl.nasa.gov/naif/data_generic.html).
+    check_and_install_spice_earth_kernel()
+    check_and_install_spice_leapseconds_kernel()
+
+    # Space weather data
+    spaceweather_historical_data[] = check_and_install_spaceweather_historical() # Historical space weather data from GFZ Potsdam
+    spaceweather_daily_forecast_data[] = check_and_install_spaceweather_daily_forecast() # Daily space weather forecast data from NOAA
+    spaceweather_monthly_forecast_data[] = check_and_install_spaceweather_monthly_forecast() # Monthly space weather forecast data from NASA Marshall Space Flight Center
+end
 
 # Constants:
 GRAVITY_CONSTANT = 6.67430e-11 # m^3 kg^-1 s^-2
