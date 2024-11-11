@@ -139,75 +139,75 @@ function get_remote_files(url::String)
 end
 
 
-# Check and install spaceweather data
+# Check and install space weather data
 function check_and_install_spaceweather_historical()
-    # Check if spaceweather data is available
+    # Check if space weather data is available
     file_path = joinpath(@__DIR__,"spaceweather/Kp_ap_Ap_SN_F107_since_1932.txt")
     if isfile(file_path)
         try
-            # check if spaceweather is up to date
+            # check if space weather is up to date
             todays_date = today()
             file_stat = stat(file_path)
             last_modified = file_stat.mtime
             last_modified_datetime = unix2datetime(last_modified)
             last_modified_date = Date(last_modified_datetime)
             if todays_date - last_modified_date > Dates.Day(1)
-                @info "Historical spaceweather data is outdated. Trying to update..."
+                @info "Historical space weather data is outdated. Trying to update..."
                 download("https://kp.gfz-potsdam.de/app/files/Kp_ap_Ap_SN_F107_since_1932.txt", file_path)
-                @info "Historical spaceweather data updated."
+                @info "Historical space weather data updated."
             end
-            @info "loading historical spaceweather data."
+            @info "loading historical space weather data."
             return spaceweather_historical(file_path)
         catch e
-            @error("loading historical spaceweather data failed. Please check the following error message:\n$e")
+            @error("loading historical space weather data failed. Please check the following error message:\n$e")
         end
     else
         try
-            @info("Historical spaceweather data not found. Downloading historical spaceweather data...")
+            @info("Historical space weather data not found. Downloading historical space weather data...")
             download("https://kp.gfz-potsdam.de/app/files/Kp_ap_Ap_SN_F107_since_1932.txt", file_path)
-            @info("Historical spaceweather data downloaded.")
+            @info("Historical space weather data downloaded.")
             return spaceweather_historical(file_path)
         catch e
-            @error("Downloading historical spaceweather data failed. Please check the following error message:\n$e")
+            @error("Downloading historical space weather data failed. Please check the following error message:\n$e")
         end
     end
 end
 
 function check_and_install_spaceweather_daily_forecast()
-    # Check if spaceweather data is available
+    # Check if space weather data is available
     file_path = joinpath(@__DIR__,"spaceweather/45-day-ap-forecast.txt")
     if isfile(file_path)
         try
-            # check if spaceweather is up to date
+            # check if space weather is up to date
             todays_date = today()
             file_stat = stat(file_path)
             last_modified = file_stat.mtime
             last_modified_datetime = unix2datetime(last_modified)
             last_modified_date = Date(last_modified_datetime)
             if todays_date - last_modified_date > Dates.Day(1)
-                @info "Daily spaceweather forecast data is outdated. Trying to update..."
+                @info "Daily space weather forecast data is outdated. Trying to update..."
                 download("https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt", file_path)
-                @info "Daily spaceweather forecast data updated."
+                @info "Daily space weather forecast data updated."
             end
         catch e
-            @error("loading daily spaceweather forecast data failed. Please check the following error message:\n$e")
+            @error("loading daily space weather forecast data failed. Please check the following error message:\n$e")
         end
     else
         try
-            @info("Daily spaceweather forecast data not found. Downloading data...")
+            @info("Daily space weather forecast data not found. Downloading data...")
             download("https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt", file_path)
         catch e
-            @error("Downloading daily spaceweather forecast data failed. Please check the following error message:\n$e")
+            @error("Downloading daily space weather forecast data failed. Please check the following error message:\n$e")
         end
     end
 
-    # Load the spaceweather daily forecast data
-    @info("loading daily spaceweather forecast data.")
+    # Load the space weather daily forecast data
+    @info("loading daily space weather forecast data.")
     return spaceweather_daily_forecast(file_path)
 end
 
 function check_and_install_spaceweather_monthly_forecast()
-    # Get the current loaded spaceweather data
+    # Get the current loaded space weather data
     directory_path = joinpath(@__DIR__,"spaceweather/")
     files = readdir(directory_path)
     file_name_nbr = findfirst(f -> endswith(f, "f10-prd.txt"), files)
@@ -216,10 +216,10 @@ function check_and_install_spaceweather_monthly_forecast()
         todays_date = today()
         current_year = Dates.year(todays_date)
         current_month = Dates.month(todays_date)
-        # Download the most recent spaceweather monthly forecast data
+        # Download the most recent space weather monthly forecast data
         try
-            # Download the most recent spaceweather monthly forecast data
-            @info("Downloading most recent monthly spaceweather forecast data...")
+            # Download the most recent space weather monthly forecast data
+            @info("Downloading most recent monthly space weather forecast data...")
             month_str =lowercase(Dates.monthname(todays_date)[1:3])
             year_str = string(current_year)
             file_name = month_str * year_str * "f10-prd.txt"
@@ -227,7 +227,7 @@ function check_and_install_spaceweather_monthly_forecast()
             download_path = "https://www.nasa.gov/wp-content/uploads/" * year_str * "/" * string(current_month) * "/" * file_name
             download(download_path, joinpath(directory_path, file_name))
         catch e
-            @error("Downloading most recent monthly spaceweather forecast data failed. Please check the following error message:\n$e")
+            @error("Downloading most recent monthly space weather forecast data failed. Please check the following error message:\n$e")
         end
     else # Check if it is the most recent one
         file_name = files[file_name_nbr]
@@ -250,19 +250,19 @@ function check_and_install_spaceweather_monthly_forecast()
             try
                 # Delete the old file
                 rm(joinpath(directory_path, file_name))
-                # Download the most recent spaceweather monthly forecast data
-                @info("Downloading most recent monthly spaceweather forecast data...")
+                # Download the most recent space weather monthly forecast data
+                @info("Downloading most recent monthly space weather forecast data...")
                 file_name = month_str * year_str * "f10-prd.txt"
 
                 download_path = "https://www.nasa.gov/wp-content/uploads/" * string(current_year) * "/" * string(current_month) * "/" * file_name
                 download(download_path, joinpath(directory_path, file_name))
             catch e
-                @error("Downloading most recent monthly spaceweather forecast data failed. Please check the following error message:\n$e")
+                @error("Downloading most recent monthly space weather forecast data failed. Please check the following error message:\n$e")
             end
         end
     end
 
-    # Load the spaceweather monthly forecast data
-    @info("loading monthly spaceweather forecast data.")
+    # Load the space weather monthly forecast data
+    @info("loading monthly space weather forecast data.")
     return spaceweather_monthly_forecast(joinpath(directory_path, file_name))
 end

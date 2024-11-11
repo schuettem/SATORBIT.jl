@@ -1,5 +1,5 @@
 function spaceweather_daily_forecast(file_path::String)
-    # Load the spaceweather data
+    # Load the space weather data
     lines = readlines(file_path)
 
     # Extract the AP forecast data

@@ -1,4 +1,4 @@
-@testset "spaceweather" begin
+@testset "Historical space weather" begin
     date = DateTime(2023, 08, 27, 0, 0, 0)
 
     f107, f107_avg, ap = SATORBIT.get_spaceweather(date)

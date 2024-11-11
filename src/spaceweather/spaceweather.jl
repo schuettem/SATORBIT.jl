@@ -1,5 +1,5 @@
 """
-    Get the spaceweather data at a specific date
+    Get the space weather data at a specific date
 """
 function get_spaceweather(date::DateTime)
     date = get_year_month_day(date)

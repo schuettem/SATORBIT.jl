@@ -56,12 +56,11 @@ function __init__()
     check_and_install_spice_earth_kernel()
     check_and_install_spice_leapseconds_kernel()
 
-    # Spaceweather data
-    spaceweather_historical_data[] = check_and_install_spaceweather_historical() # Historical spaceweather data from GFZ Potsdam
-    spaceweather_daily_forecast_data[] = check_and_install_spaceweather_daily_forecast() # Daily spaceweather forecast data from NOAA
-    spaceweather_monthly_forecast_data[] = check_and_install_spaceweather_monthly_forecast() # Monthly spaceweather forecast data from NASA Marshall Space Flight Center
+    # Space weather data
+    spaceweather_historical_data[] = check_and_install_spaceweather_historical() # Historical space weather data from GFZ Potsdam
+    spaceweather_daily_forecast_data[] = check_and_install_spaceweather_daily_forecast() # Daily space weather forecast data from NOAA
+    spaceweather_monthly_forecast_data[] = check_and_install_spaceweather_monthly_forecast() # Monthly space weather forecast data from NASA Marshall Space Flight Center
 end
-
 
 # Constants:
 GRAVITY_CONSTANT = 6.67430e-11 # m^3 kg^-1 s^-2

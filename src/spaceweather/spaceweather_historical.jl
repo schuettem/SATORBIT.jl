@@ -1,5 +1,5 @@
 """
-    Loads the spaceweather data from the file Kp_ap_Ap_SN_F107_since_1932.txt
+    Loads the space weather data from the file Kp_ap_Ap_SN_F107_since_1932.txt
 
     This file was downloaded from the GFZ German Research Centre for Geosciences on Oct. 29, 2024
     https://kp.gfz-potsdam.de/app/files/Kp_ap_Ap_SN_F107_since_1932.txt
@@ -42,7 +42,7 @@ function get_rownbr(date::Date)
 end
 
 """
-    Get the historical spaceweather data at a specific date
+    Get the historical space weather data at a specific date
 """
 function get_spaceweather_historical(date::Date)
     row_nbr = get_rownbr(date)

@@ -33,7 +33,7 @@ end
 function get_spaceweather_monthly_forecast(date::Date)
     date_str = Dates.format(date, "yyyy-mm")
 
-    # get the spaceweather data for the current month
+    # get the space weather data for the current month
     df_current_month = spaceweather_monthly_forecast_data[][df.Date .== date_str, :]
 
     f107_50 = df_current_month.F107_50[1]
