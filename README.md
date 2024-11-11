@@ -72,7 +72,7 @@ This package uses the following packages and models:
 This code is licensed under the MIT License
 
 ## Data License
-- Space weather data:<br>
+- Historical space weather data:<br>
   General:<br>
   This project uses data licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) license. Data source: [Geomagnetic Observatory Niemegk, GFZ German Research Centre for Geosciences](https://www.gfz-potsdam.de/). <br>
   Sunspot data:<br>
