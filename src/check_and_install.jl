@@ -65,7 +65,7 @@ function check_and_install_spice_earth_kernel()
         local_last_modified_datetime = unix2datetime(local_last_modified)
         local_last_modified_date = Date(local_last_modified_datetime)
 
-        if today() - local_last_modified_date > Dates.Day(1) # Load the file if it is older than 1 day
+        if today() - local_last_modified_date >= Dates.Day(1) # Load the file if it is older than 1 day
             try
                 @info("Download latest earth SPICE kernel file...")
 
@@ -151,7 +151,7 @@ function check_and_install_spaceweather_historical()
             last_modified = file_stat.mtime
             last_modified_datetime = unix2datetime(last_modified)
             last_modified_date = Date(last_modified_datetime)
-            if todays_date - last_modified_date > Dates.Day(1)
+            if todays_date - last_modified_date >= Dates.Day(1)
                 @info "Historical space weather data is outdated. Trying to update..."
                 download("https://kp.gfz-potsdam.de/app/files/Kp_ap_Ap_SN_F107_since_1932.txt", file_path)
                 @info "Historical space weather data updated."
@@ -184,7 +184,7 @@ function check_and_install_spaceweather_daily_forecast()
             last_modified = file_stat.mtime
             last_modified_datetime = unix2datetime(last_modified)
             last_modified_date = Date(last_modified_datetime)
-            if todays_date - last_modified_date > Dates.Day(1)
+            if todays_date - last_modified_date >= Dates.Day(1)
                 @info "Daily space weather forecast data is outdated. Trying to update..."
                 download("https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt", file_path)
                 @info "Daily space weather forecast data updated."
