@@ -50,13 +50,13 @@ This package uses the following packages and models:
 
 - Forecast space weather data (45-days):
   - This data is used as input for the atmospheric model (F10.7, no 81 day average, ap).
-  - Data source: ["https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt"]("https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt")
-  - The file `45-day-ap-forecast.txt` will be downloaded from ["https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt"]("https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt") to ensure it remains up to date.
+  - Data source: [https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt](https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt)
+  - The file `45-day-ap-forecast.txt` will be downloaded from [https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt](https://services.swpc.noaa.gov/text/45-day-ap-forecast.txt) to ensure it remains up to date.
 
 - Forecast space weather data (monthly forecast):
    - This data is used as input for the atmospheric model (F10.7, no 81 day average, ap).
-   - Data source: ["https://www.nasa.gov/solar-cycle-progression-and-forecast/archived-forecast/"]("https://www.nasa.gov/solar-cycle-progression-and-forecast/archived-forecast/")
-   - The recent updated file will be downloaded from ["https://www.nasa.gov/solar-cycle-progression-and-forecast/archived-forecast/"]("https://www.nasa.gov/solar-cycle-progression-and-forecast/archived-forecast/").
+   - Data source: [https://www.nasa.gov/solar-cycle-progression-and-forecast/archived-forecast/](https://www.nasa.gov/solar-cycle-progression-and-forecast/archived-forecast/)
+   - The recent updated file will be downloaded from [https://www.nasa.gov/solar-cycle-progression-and-forecast/archived-forecast/](https://www.nasa.gov/solar-cycle-progression-and-forecast/archived-forecast/).
 
 ## References
 - Historical space weather:<br>
