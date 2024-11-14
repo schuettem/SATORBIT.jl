@@ -15,6 +15,7 @@ using PyCall
 using HWM14
 using Base.Filesystem: stat
 using HTTP
+using SpecialFunctions
 
 # Include files:
 include("planetary_data/earth.jl")
