@@ -5,6 +5,8 @@ using LinearAlgebra
 using CSV
 using DataFrames
 
+GLMakie.activate!()
+
 # Satellite Parameters
 c_d = 2.2 # Drag Coefficient
 area = 0.1 # Cross-sectional area (m^2)
@@ -39,8 +41,8 @@ disturbances = SATORBIT.Pertubations(J2, aero)
 nbr_orbits = 1 # Number of orbits to simulate
 nbr_steps = 200 # Number of total steps
 
-fig = Figure(size = (800, 800))
-ax = Axis3(fig[1, 1], width = 600, height = 600)
+fig = Figure(size = (800, 800), backgroundcolor = :black)
+ax = Axis3(fig[1, 1], width = 600, height = 600, aspect = (1, 1, 1))
 # inital eci position
 r_0, _ = SATORBIT.coes2eci(init_orbit, central_body.μ)
 r_0_mag = norm(r_0)
@@ -63,7 +65,7 @@ x_earth = [earth_radius * sin(φ) * cos(θ) for φ in φ, θ in θ]
 y_earth = [earth_radius * sin(φ) * sin(θ) for φ in φ, θ in θ]
 z_earth = [earth_radius * cos(φ) for φ in φ, θ in θ]
 
-surface!(ax, x_earth, y_earth, z_earth, color = :lightblue, transparency = true)
+surface!(ax, x_earth, y_earth, z_earth, color = :lightblue, transparency = false)
 
 is_running = Observable(false)
 
@@ -121,6 +123,10 @@ lines!(ax, coastline_africa_eci_x, coastline_africa_eci_y, coastline_africa_eci_
 scatter!(ax, satellite_pos_x, satellite_pos_y, satellite_pos_z, markersize = 10, color = :red)
 
 limits!(ax, -r_0_mag, r_0_mag, -r_0_mag, r_0_mag, -r_0_mag, r_0_mag)
+
+# remove coordinate system
+hidedecorations!(ax)
+
 display(fig)
 
 function animation(orbit::SATORBIT.Orbit, disturbances, nbr_orbits, nbr_steps)
