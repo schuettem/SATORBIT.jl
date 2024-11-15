@@ -68,10 +68,6 @@ println("Greenwich Sidereal Time: $theta_deg")
 GLMakie.rotate!(earth_mesh, Vec3f0(0, 0, 1), theta)
 
 # plot eci frame axes as arrows
-x_eci = (earth_radius  + 1e6) * [1, 0, 0]
-y_eci = (earth_radius  + 1e6) * [0, 1, 0]
-z_eci = (earth_radius  + 1e6) * [0, 0, 1]
-
 x_eci = (earth_radius + 1e6) * Vec3f0(1, 0, 0)
 y_eci = (earth_radius + 1e6) * Vec3f0(0, 1, 0)
 z_eci = (earth_radius + 1e6) * Vec3f0(0, 0, 1)

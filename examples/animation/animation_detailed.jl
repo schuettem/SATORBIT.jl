@@ -108,6 +108,15 @@ theta = atan(R_eci_ecef[1, 1], R_eci_ecef[2, 1]) + π/2
 # Rotate the Earth mesh
 GLMakie.rotate!(earth_mesh, Vec3f0(0, 0, 1), theta)
 
+# plot eci frame axes as arrows
+x_eci = (earth_radius + 1e6) * Vec3f0(1, 0, 0)
+y_eci = (earth_radius + 1e6) * Vec3f0(0, 1, 0)
+z_eci = (earth_radius + 1e6) * Vec3f0(0, 0, 1)
+
+arrows!(ax, [Point3f0(0, 0, 0)], [Point3f0(x_eci...)], arrowsize = 1e6, color = :red)
+arrows!(ax, [Point3f0(0, 0, 0)], [Point3f0(y_eci...)], arrowsize = 1e6, color = :green)
+arrows!(ax, [Point3f0(0, 0, 0)], [Point3f0(z_eci...)], arrowsize = 1e6, color = :blue)
+
 display(figure)
 
 function animation(orbit::SATORBIT.Orbit, disturbances, nbr_orbits, nbr_steps)
