@@ -158,3 +158,30 @@ function wind2eci(w::Vector{Float64}, lat::Float64, lon::Float64, time_utc::Date
     w_eci = R_ecef_eci * w_ecef
     return w_eci
 end
+
+"""
+    transform eci (earth-centered inertial) to tnw (tangential, normal, and radial)
+
+    t - tangential: along the of the orbit
+    n - normal: perpendicular to the orbit plane, along the angular momentum vector
+    w - cross track: completes the right-handed coordinate system, pointing towards the center of the orbit.
+"""
+function eci2tnw(r_eci::Vector{Float64}, v_eci::Vector{Float64})
+    # Calculate the tangential (T) vector
+    T = normalize(v_eci) # unit velocity vector
+
+    # Calculate the normal (N) vector (angular momentum vector)
+    h = cross(r_eci, v_eci)
+    N = normalize(h) # unit angular momentum vector
+
+    # Calculate the cross-track (W) vector
+    W = cross(T, N)
+
+    # Construct the rotation matrix from ECI to TNW
+    R_eci_tnw = hcat(T, W, N)
+
+    # Transform the velocity from ECI to TNW
+    v_tnw = R_eci_tnw' * v_eci
+
+    return v_tnw
+end

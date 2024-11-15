@@ -17,11 +17,12 @@ OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
 SPICE = "5bab7191-041a-5c2e-a744-024b9c3a5062"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [sources]
-HWM14 = { url = "https://github.com/schuettem/HWM14.git", rev = "main" }
+HWM14 = {rev = "main", url = "https://github.com/schuettem/HWM14.git"}
 
 [compat]
 CSV = "0.10.14"
@@ -37,5 +38,6 @@ OrdinaryDiffEq = "6.89.0"
 Pkg = "1.11.0"
 PyCall = "1.96.4"
 SPICE = "0.2.3"
+SpecialFunctions = "2.4.0"
 Statistics = "1.11.1"
 Test = "1.11.0"

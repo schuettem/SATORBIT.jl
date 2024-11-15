@@ -48,6 +48,7 @@ function get_atmosphere_data(r::Vector{Float64}, date_time::DateTime, central_bo
     velocity = v_atm_rot + v_wind # velocity of the atmosphere in the ECI frame
     return Atmosphere(atm, velocity)
 end
+
 """
     Get the NRLMSISE00 data at a given altitude, latitude, longitude, and time
 
@@ -128,6 +129,18 @@ function atmosphere_orbit_data(orbit::Orbit)
         push!(nrlmsise00_data, atm)
     end
     return nrlmsise00_data
+end
+
+function calc_nbr_flux_density(density::Float64, velocity_n::Float64, temperature::Float64)
+    c_m = most_probable_speed(temperature)
+    s_n = velocity_n / c_m
+    return density * c_m * 1/(2 *sqrt(π)) * (exp(-s_n^2) + √(π) * s_n * (1 + erf(s_n))) # Bird 1994
+end
+
+function most_probable_speed(temperature::Float64)
+    k_B = 1.38064852e-23 # Boltzmann constant
+    m_AOX = 2.657E-26 # mass atomic oxygen
+    return sqrt(2 * k_B * temperature / m_AOX)
 end
 
 include("get_densities_temp.jl")

@@ -8,14 +8,14 @@ function plot_atmosphere(orbit::Orbit)
 
     fig = Figure()
     ax1 = Axis(fig[1, 1], xlabel = "Time / h", ylabel = "Temperature / K")
-    ax2 = Axis(fig[1, 2], xlabel = "Time / h", ylabel = "Oxygen Density / m^-3")
-    ax3 = Axis(fig[2, 1], xlabel = "Time / h", ylabel = "Relative Velocity / (m/s)")
-    ax4 = Axis(fig[2, 2], xlabel = "Time / h", ylabel = "Velocity / (m/s)")
+    ax2 = Axis(fig[1, 2], xlabel = "Time / h", ylabel = "Oxygen density / m^-3")
+    ax3 = Axis(fig[2, 1], xlabel = "Time / h", ylabel = "Relative velocity / (m/s)")
+    ax4 = Axis(fig[2, 2], xlabel = "Time / h", ylabel = "nbr flux density / 1 / (m^2 s)")
 
     temperature = Float64[]
     n_aox = Float64[]
     v_relative = Float64[] # relative velocity in m/s in the ECI frame to the atmosphere
-    v = Float64[] # orbit velocity in m/s in the ECI frame
+    nbr_flux_densities = Float64[]
 
     # Calculate the atmospheric conditions:
     for i in 1:length(orbit.eci)
@@ -33,7 +33,11 @@ function plot_atmosphere(orbit::Orbit)
         push!(temperature, T)
         push!(n_aox, n_o)
         push!(v_relative, v_rel)
-        push!(v, norm(eci.v))
+
+        # Calculate the number flux density
+        v_tnw = eci2tnw(eci.r, v_orbit - v_atm)
+        nbr_flux_density = calc_nbr_flux_density(n_o, v_tnw[1], T)
+        push!(nbr_flux_densities, nbr_flux_density)
     end
 
     n_aox_mean = mean(n_aox) * ones(length(n_aox))
@@ -45,7 +49,7 @@ function plot_atmosphere(orbit::Orbit)
     lines!(ax2, prop_time, n_aox_mean, color = :red, linestyle = :dash, linewidth = 2)
     lines!(ax3, prop_time, v_relative, color = :green, linewidth = 2)
     lines!(ax3, prop_time, v_relative_mean, color = :green, linestyle = :dash, linewidth = 2)
-    lines!(ax4, prop_time, v, color = :purple, linewidth = 2)
+    lines!(ax4, prop_time, nbr_flux_densities, color = :purple, linewidth = 2)
 
     # add title to the figure
     start_date = orbit.time_utc[1]
