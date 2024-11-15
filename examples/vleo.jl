@@ -40,6 +40,6 @@ nbr_steps = 200 # Number of total steps
 SATORBIT.simulate_orbit!(orbit, disturbances, nbr_orbits, nbr_steps)
 
 # SATORBIT.plot_3d(orbit)
-# SATORBIT.plot_ground_track(orbit)
-SATORBIT.plot_atmosphere(orbit)
+SATORBIT.plot_ground_track(orbit, "+proj=merc")
+# SATORBIT.plot_atmosphere(orbit)
 # SATORBIT.plot_coes(orbit)
