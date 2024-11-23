@@ -36,20 +36,38 @@ function create_buttons(fig)
 
     start_button = Button(fig, label = "Start", width = button_size[1], height = button_size[2])
     stop_button = Button(fig, label = "Stop", width = button_size[1], height = button_size[2])
+    restart_button = Button(fig, label = "Restart", width = button_size[1], height = button_size[2])
 
-    button_box[1, 1] = start_button
-    button_box[2, 1] = stop_button
+    button_box[2, 1] = start_button
+    button_box[3, 1] = stop_button
+    button_box[4, 1] = restart_button
 
-    connect_buttons(start_button, stop_button)
+    # Slider
+    slider_grid = GridLayout(button_box[1, 1])
+    sl_cd = Slider(slider_grid[2, 1], range = 1.5:0.1:3, startvalue = 2.2)
+    slider_label = Label(slider_grid[1, 1], "", fontsize = 20, color = :white)
+    lift(sl_cd.value) do value
+        slider_label.text = "Drag coefficient: $(round(value, digits=1))"
+    end
+    # Update the satellite's c_d value when the slider value changes
+    on(sl_cd.value) do value
+        orbit[].satellite = SATORBIT.Satellite(value, orbit[].satellite.area, orbit[].satellite.mass,)
+    end
+
+    connect_buttons(start_button, stop_button, restart_button, sl_cd)
 end
 
-function connect_buttons(start_button, stop_button)
+function connect_buttons(start_button, stop_button, restart_button, sl_cd)
     on(start_button.clicks) do _
         start_simulation()
     end
 
     on(stop_button.clicks) do _
         stop_simulation()
+    end
+
+    on(restart_button.clicks) do _
+        restart_simulation(sl_cd)
     end
 end
 
@@ -61,6 +79,21 @@ end
 # Simulation control functions
 function start_simulation()
     is_running[] = true
+end
+
+function restart_simulation(sl_cd)
+    is_running[] = false
+    satellite_pos_x[] = r_0[1]
+    satellite_pos_y[] = r_0[2]
+    satellite_pos_z[] = r_0[3]
+    date_label[] = Dates.format(start_date, "yyyy-mm-dd HH:MM:SS")
+    altitude_label[] = @sprintf("Altitude: %.2f km", altitude)
+    rotate_earth(earth, start_date)
+    rotate_ecef_frame(x_ecef, y_ecef, z_ecef, start_date)
+    # set slider value to default
+    set_close_to!(sl_cd, 2.2)
+    satellite = SATORBIT.Satellite(2.2, 1, 1)
+    orbit[] = SATORBIT.Orbit(satellite, central_body, init_orbit, start_date)
 end
 
 function plot_earth(ax)
