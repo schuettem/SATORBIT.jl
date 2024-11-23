@@ -110,8 +110,7 @@ function rel_velocity_to_atm(r::Vector{Float64}, v::Vector{Float64}, central_bod
     v_atm_rot = cross(central_body.atm_rot_vec, r) # r in ECI
     v_wind = wind(date_time, alt, lat, lon, stl, f107a, f107, ap) # v_wind in ECI
     v_rel = v - v_atm_rot - v_wind # v , r in ECI
-    v_rel_norm = norm(v_rel)
-    return v_rel_norm
+    return v_rel
 end
 
 """

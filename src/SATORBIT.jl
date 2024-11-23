@@ -16,6 +16,7 @@ using HWM14
 using Base.Filesystem: stat
 using HTTP
 using SpecialFunctions
+using GeoMakie
 
 # Include files:
 include("planetary_data/earth.jl")
