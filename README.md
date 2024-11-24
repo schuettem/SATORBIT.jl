@@ -1,4 +1,4 @@
-# SATORBIT
+# SATORBIT.jl
 SATORBIT.jl is a Julia package designed for simulating satellite orbits around Earth. This package provides comprehensive tools for defining initial orbital elements, simulating the orbit over a specified number of orbits, and accounting for various perturbations.
 
 ## Features
