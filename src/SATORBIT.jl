@@ -10,8 +10,6 @@ using DataFrames
 using Statistics
 using SPICE
 using OrdinaryDiffEq
-using Pkg
-using PyCall
 using HWM14
 using Base.Filesystem: stat
 using HTTP
