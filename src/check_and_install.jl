@@ -1,7 +1,9 @@
 # Check and install SPICE
 function check_and_install_spice_earth_kernel()
     # check if folder "spice_kernels" exists
-    kernel_dir = "/home/miklas/.julia/dev/SATORBIT/src/spice_kernels/"
+    dir = @__DIR__
+    kernel_folder = "spice_kernels"
+    kernel_dir = dir * "/" * kernel_folder * "/"
     if !isdir(kernel_dir)
         mkdir(kernel_dir)
     end
@@ -73,7 +75,9 @@ end
 
 function check_and_install_spice_leapseconds_kernel()
     # check if folder "spice_kernels" exists
-    kernel_dir = "/home/miklas/.julia/dev/SATORBIT/src/spice_kernels/"
+    dir = @__DIR__
+    kernel_folder = "spice_kernels"
+    kernel_dir = dir * "/" * kernel_folder * "/"
     if !isdir(kernel_dir)
         mkdir(kernel_dir)
     end
