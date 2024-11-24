@@ -16,7 +16,6 @@ Note: This project is not affiliated with NASA, NRL, NAIF, NOAA, or the GFZ in a
 
 ## Prerequisites
  - The package [HWM14](https://github.com/schuettem/HWM14) has to be added manually.
- - The python module for the NRLMSISE-00 atmospheric model is installed automatically via `pip`, if it is not already installed. Make sure that `pip` is installed.
 
 ## Installation
 1. Open julia and enter the package manager (Pkg) mode by pressing `]`.
@@ -27,10 +26,9 @@ Note: This project is not affiliated with NASA, NRL, NAIF, NOAA, or the GFZ in a
 
 ## Acknowledgements
 This package uses the following packages and models:
-- PyNRLMSISE-00:
-  - We are using the [PyNRLMSISE-00](https://pypi.org/project/nrlmsise00/) Python interface for the NRLMSISE-00 empirical neutral atmosphere model.
+- NRLMSISE-00:
+  - We are using the NRLMSISE-00 atmosphere model from the [SatelliteToolboxAtmosphericModel](https://juliaspace.github.io/SatelliteToolboxAtmosphericModels.jl/stable/man/nrlmsise00/)
    - The NRLMSISE-00 is an empirical, global reference atmospheric model developed by the US Naval Research Laboratory (NRL). It models the temperatures and densities of the Earth's atmosphere from the ground up to space. The model was developed by Mike Picone, Alan Hedin, and Doug Drob.
-   - We acknowledge the Community Coordinated Modeling Center (CCMC) at Goddard Space Flight Center for the use of the [NRLMSIS-00](https://ccmc.gsfc.nasa.gov/models/NRLMSIS~00/).
 
 - SPICE.jl:
   - Used for the SPICE kernel operations.

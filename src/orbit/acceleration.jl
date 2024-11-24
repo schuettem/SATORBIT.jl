@@ -11,12 +11,15 @@ function acceleration(central_body::Earth, satellite::Satellite, r_eci::Vector{F
 
     # atmospheric drag
     if disturbances.aero
+        # Latitude and longitude
+        r_ecef = eci2ecef(r_eci, time_utc)
+        latitude, longitude = ecef2geo(r_ecef)
         # Atmospheric data:
         f107, f107a, ap = get_spaceweather(time_utc)
-        atm = get_nrlmsise00_data(time_utc, norm(r_eci) - central_body.radius, latitude, longitude, f107a, f107, ap)
-        ρ = get_total_mass_density(atm)
-        v_rel_norm = rel_velocity_to_atm(r_eci, v_eci, central_body, time_utc, latitude, longitude, 0.0, f107a, f107, [0.0, ap])
-        a_drag = drag(satellite, v_rel_norm, ρ)
+        atm = AtmosphericModels.nrlmsise00(time_utc, norm(r_eci) - central_body.radius, deg2rad(latitude), deg2rad(longitude), f107a, f107, ap)
+        ρ = atm.total_density
+        v_rel = rel_velocity_to_atm(r_eci, v_eci, central_body, time_utc, latitude, longitude, 0.0, f107a, f107, [0.0, ap])
+        a_drag = drag(satellite, v_rel, ρ)
     else
         a_drag = [0.0, 0.0, 0.0]
     end
@@ -54,13 +57,13 @@ end
 """
     atmospheric drag
 """
-function drag(satellite::Satellite, v_rel_norm::Float64, ρ::Float64)
+function drag(satellite::Satellite, v_rel::Vector{Float64}, ρ::Float64)
     # Satellite
     A = satellite.area
     m = satellite.mass
     c_d = satellite.c_d
 
     # Drag acceleration
-    a_drag = - 1/2 * ρ * A * c_d / m * v_rel_norm * v_rel
+    a_drag = - 1/2 * ρ * A * c_d / m * norm(v_rel) * v_rel
     return a_drag
 end
