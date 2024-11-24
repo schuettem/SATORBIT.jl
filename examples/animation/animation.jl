@@ -1,12 +1,10 @@
 using SATORBIT
-using FileIO
 using GLMakie
 using GeometryBasics
 using LinearAlgebra
 using Dates
-using Printf
-using CairoMakie
 using GLFW
+using FileIO
 
 include("gui.jl")
 
@@ -54,7 +52,7 @@ satellite_position = Observable(r_0)
 date_label = Observable(Dates.format(start_date, "yyyy-mm-dd HH:MM:SS"))
 altitude = round((r_0_mag - central_body.radius) / 1e3, digits=2)
 altitude_label = Observable("")
-altitude_label[] = @sprintf("%.2f km", altitude)
+altitude_label[] = "$(round(altitude, digits=2)) km"
 
 # COES labels
 coes = Observable(init_orbit)
@@ -98,7 +96,7 @@ function animation(orbit, disturbances)
                 satellite_position[] = r
 
                 altitude = round((norm(r) - orbit[].central_body.radius) / 1e3 , digits=2)
-                altitude_label[] = @sprintf("%.2f km", altitude)
+                altitude_label[] = "$(round(altitude, digits=2)) km"
                 date_label[] = Dates.format(orbit[].time_utc[end], "yyyy-mm-dd HH:MM:SS")
 
                 a, e, i, Ω, ω, f = SATORBIT.eci2coes(r, v, central_body.μ)
@@ -106,7 +104,7 @@ function animation(orbit, disturbances)
 
                 if altitude < 100 # stop the simulation if the satellite is below 100 km
                     is_running[] = false
-                    crash_label[] = @sprintf("Altitude below 100 km Simulation stopped")
+                    crash_label[] = "Altitude below 100 km Simulation stopped"
                 end
 
                 # Rotate the Earth

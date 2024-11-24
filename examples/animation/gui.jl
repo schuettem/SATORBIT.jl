@@ -150,7 +150,7 @@ function restart_simulation(sl_cd, sl_area, sl_mass)
     is_running[] = false
     satellite_position[] = r_0
     date_label[] = Dates.format(start_date, "yyyy-mm-dd HH:MM:SS")
-    altitude_label[] = @sprintf("%.2f km", altitude)
+    altitude_label[] = "$(round(altitude, digits=2)) km"
     rotate_earth(earth, start_date)
     rotate_ecef_frame(x_ecef, y_ecef, z_ecef, start_date)
 
