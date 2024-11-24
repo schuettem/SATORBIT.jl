@@ -6,6 +6,7 @@ using LinearAlgebra
 using Dates
 using Printf
 using CairoMakie
+using GLFW
 
 include("gui.jl")
 
@@ -23,7 +24,7 @@ central_body = SATORBIT.Earth()
 
 alt_perigee = 300e3
 radius_perigee = central_body.radius + alt_perigee
-alt_apogee = 300e3
+alt_apogee = 400e3
 radius_apogee = central_body.radius + alt_apogee
 
 e = (radius_apogee - radius_perigee) / (radius_apogee + radius_perigee) # Eccentricity
