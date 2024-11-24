@@ -16,8 +16,8 @@ function acceleration(central_body::Earth, satellite::Satellite, r_eci::Vector{F
         latitude, longitude = ecef2geo(r_ecef)
         # Atmospheric data:
         f107, f107a, ap = get_spaceweather(time_utc)
-        atm = get_nrlmsise00_data(time_utc, norm(r_eci) - central_body.radius, latitude, longitude, f107a, f107, ap)
-        ρ = get_total_mass_density(atm)
+        atm = AtmosphericModels.nrlmsise00(time_utc, norm(r_eci) - central_body.radius, deg2rad(latitude), deg2rad(longitude), f107a, f107, ap)
+        ρ = atm.total_density
         v_rel = rel_velocity_to_atm(r_eci, v_eci, central_body, time_utc, latitude, longitude, 0.0, f107a, f107, [0.0, ap])
         a_drag = drag(satellite, v_rel, ρ)
     else

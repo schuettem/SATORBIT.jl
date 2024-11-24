@@ -56,7 +56,5 @@ function plot_atmosphere(orbit::Orbit)
     end_date = orbit.time_utc[end]
     Label(fig[0, :], text = "$(start_date) to $(end_date)", fontsize = 24, tellwidth = false)
 
-    save("orbit.png", fig)
-
     display(fig)
 end

@@ -13,17 +13,17 @@ struct Atmosphere
     velocity::Vector{Float64}
 
     function Atmosphere(atm, velocity)
-        he_density = get_he_density(atm)
-        o_density = get_o_density(atm)
-        n2_density = get_n2_density(atm)
-        o2_density = get_o2_density(atm)
-        ar_density = get_ar_density(atm)
-        total_mass_density = get_total_mass_density(atm)
-        h_density = get_h_density(atm)
-        n_density = get_n_density(atm)
-        anomalous_o_density = get_anomalous_o_density(atm)
-        temperature = get_temperature(atm)
-        exo_temperature = get_exo_temperature(atm)
+        he_density = atm.He_number_density
+        o_density = atm.O_number_density
+        n2_density = atm.N2_number_density
+        o2_density = atm.O2_number_density
+        ar_density = atm.Ar_number_density
+        total_mass_density = atm.total_density
+        h_density = atm.H_number_density
+        n_density = atm.N_number_density
+        anomalous_o_density = atm.aO_number_density
+        temperature = atm.temperature
+        exo_temperature = atm.exospheric_temperature
         new(he_density, o_density, n2_density, o2_density, ar_density, total_mass_density, h_density, n_density, anomalous_o_density, temperature, exo_temperature, velocity)
     end
 end
@@ -41,7 +41,8 @@ function get_atmosphere_data(r::Vector{Float64}, date_time::DateTime, central_bo
     altitude = norm(r) - central_body.radius # altitude in meters
 
     f107, f107a, ap = get_spaceweather(date_time)
-    atm = get_nrlmsise00_data(date_time, altitude, latitude, longitude, f107, f107a, ap)
+
+    atm = AtmosphericModels.nrlmsise00(date_time, altitude, deg2rad(latitude), deg2rad(longitude), f107a, f107, ap)
 
     v_atm_rot = cross(central_body.atm_rot_vec, r)
     v_wind = wind(date_time, altitude / 1e3, latitude, longitude, 0.0, f107, f107a, [0.0, ap]) # v_wind in ECI

@@ -17,6 +17,7 @@ using Base.Filesystem: stat
 using HTTP
 using SpecialFunctions
 using GeoMakie
+using SatelliteToolboxAtmosphericModels
 
 # Include files:
 include("planetary_data/earth.jl")
@@ -38,8 +39,6 @@ include("plot/plot_coes.jl")
 
 include("check_and_install.jl")
 
-const nrlmsise00 = PyNULL()
-
 const leapseconds_kernel = joinpath(@__DIR__, "spice_kernels/latest_leapseconds.tls")
 const earth_kernel = joinpath(@__DIR__, "spice_kernels/earth_1962_240827_2124_combined.bpc") # Earth orientation history and predicted kernel
 
@@ -48,10 +47,6 @@ const spaceweather_daily_forecast_data = Ref{DataFrame}(DataFrame())
 const spaceweather_monthly_forecast_data = Ref{DataFrame}(DataFrame())
 
 function __init__()
-    # NRLMSISE-00 model
-    atm_model = check_and_install_nrlmsise00()
-    copy!(nrlmsise00, atm_model)
-
     # SPICE
     # The SPICE kernels used in this script are provided by the NASA Navigation and Ancillary Information Facility (NAIF).
     # Data Source: NAIF Generic Kernels (https://naif.jpl.nasa.gov/naif/data_generic.html).
