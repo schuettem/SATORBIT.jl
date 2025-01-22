@@ -192,16 +192,16 @@ function check_and_install_spaceweather_monthly_forecast()
     if file_name_nbr === nothing # If the file is not found
         todays_date = today()
         current_year = Dates.year(todays_date)
-        current_month = Dates.month(todays_date)
+        current_month = Dates.format(todays_date, "mm")
         # Download the most recent space weather monthly forecast data
         try
             # Download the most recent space weather monthly forecast data
             @info("Downloading most recent monthly space weather forecast data...")
-            month_str =lowercase(Dates.monthname(todays_date)[1:3])
+            month_str = lowercase(Dates.monthname(todays_date)[1:3])
             year_str = string(current_year)
             file_name = month_str * year_str * "f10-prd.txt"
 
-            download_path = "https://www.nasa.gov/wp-content/uploads/" * year_str * "/" * string(current_month) * "/" * file_name
+            download_path = "https://www.nasa.gov/wp-content/uploads/" * year_str * "/" * current_month * "/" * file_name
             download(download_path, joinpath(directory_path, file_name))
         catch e
             @error("Downloading most recent monthly space weather forecast data failed. Please check the following error message:\n$e")
@@ -231,7 +231,8 @@ function check_and_install_spaceweather_monthly_forecast()
                 @info("Downloading most recent monthly space weather forecast data...")
                 file_name = month_str * year_str * "f10-prd.txt"
 
-                download_path = "https://www.nasa.gov/wp-content/uploads/" * string(current_year) * "/" * string(current_month) * "/" * file_name
+                current_month = Dates.format(todays_date, "mm")
+                download_path = "https://www.nasa.gov/wp-content/uploads/" * string(current_year) * "/" * current_month * "/" * file_name
                 download(download_path, joinpath(directory_path, file_name))
             catch e
                 @error("Downloading most recent monthly space weather forecast data failed. Please check the following error message:\n$e")
