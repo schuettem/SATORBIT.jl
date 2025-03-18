@@ -16,6 +16,9 @@ using HTTP
 using SpecialFunctions
 using GeoMakie
 using SatelliteToolboxAtmosphericModels
+using GLFW
+using GeometryBasics
+using FileIO
 
 # Include files:
 include("planetary_data/earth.jl")
@@ -36,6 +39,9 @@ include("plot/plot_atmosphere.jl")
 include("plot/plot_coes.jl")
 
 include("check_and_install.jl")
+
+include("animation/gui.jl")
+include("animation/animation.jl")
 
 const leapseconds_kernel = joinpath(@__DIR__, "spice_kernels/latest_leapseconds.tls")
 const earth_kernel = joinpath(@__DIR__, "spice_kernels/earth_1962_240827_2124_combined.bpc") # Earth orientation history and predicted kernel
