@@ -9,13 +9,16 @@ function plot_atmosphere(orbit::Orbit)
     fig = Figure()
     ax1 = Axis(fig[1, 1], xlabel = L"t \, / \, \mathrm{h}", ylabel = L"T \, / \, \mathrm{K}")
     ax2 = Axis(fig[1, 2], xlabel = L"t \, / \, \mathrm{h}", ylabel = L"n_{\mathrm{O}} \, / \, \mathrm{m^{-3}}")
-    ax3 = Axis(fig[2, 1], xlabel = L"t \, / \, \mathrm{h}", ylabel = L"v_{rel} \, / \, \mathrm{(m/s)}")
-    ax4 = Axis(fig[2, 2], xlabel = L"t \, / \, \mathrm{h}", ylabel = L"\dot{n}_{\mathrm{O}} \, / \, \mathrm{1 / (m^2 s)}")
+    ax3 = Axis(fig[2, 1], xlabel = L"t \, / \, \mathrm{h}", ylabel = L"u_{rel} \, / \, \mathrm{(m/s)}")
+    ax4 = Axis(fig[2, 2], xlabel = L"t \, / \, \mathrm{h}", ylabel = L"\dot{n}_{\mathrm{O}} \, / \, \mathrm{(m^2 s)^{-1}}")
+    ax5 = Axis(fig[3, 1], xlabel = L"t \, / \, \mathrm{h}", ylabel = L"\theta \, / \, ^{°}")
 
     temperature = Float64[]
     n_aox = Float64[]
     v_relative = Float64[] # relative velocity in m/s in the ECI frame to the atmosphere
     nbr_flux_densities = Float64[]
+    polar_angles = Float64[]
+    polar_angles_2 = Float64[]
 
     # Calculate the atmospheric conditions:
     for i in 1:length(orbit.eci)
@@ -35,9 +38,15 @@ function plot_atmosphere(orbit::Orbit)
         push!(v_relative, v_rel)
 
         # Calculate the number flux density
-        v_tnw = eci2tnw(eci.r, v_orbit - v_atm)
+        v_orbit_tnw = eci2tnw(eci.r, v_orbit, v_orbit)
+        v_atm_tnw = eci2tnw(eci.r, v_orbit, v_atm)
+        v_tnw = v_orbit_tnw - v_atm_tnw
         nbr_flux_density = calc_nbr_flux_density(n_o, v_tnw[1], T)
         push!(nbr_flux_densities, nbr_flux_density)
+
+        # polar angle
+        theta = atand(v_tnw[3], v_tnw[1])
+        push!(polar_angles, theta)
     end
 
     # n_aox_mean = mean(n_aox) * ones(length(n_aox))
@@ -50,6 +59,9 @@ function plot_atmosphere(orbit::Orbit)
     lines!(ax3, prop_time, v_relative, color = :green, linewidth = 2)
     # lines!(ax3, prop_time, v_relative_mean, color = :green, linestyle = :dash, linewidth = 2)
     lines!(ax4, prop_time, nbr_flux_densities, color = :purple, linewidth = 2)
+
+    lines!(ax5, prop_time, polar_angles, color = :orange, linewidth = 2)
+    ylims!(ax5, -5, 5)
 
     # add title to the figure
     start_date = orbit.time_utc[1]
