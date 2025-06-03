@@ -1,4 +1,6 @@
-# Check and install SPICE
+"""
+    Check and install SPICE earth kernel
+"""
 function check_and_install_spice_earth_kernel()
     # check if folder "spice_kernels" exists
     dir = @__DIR__
@@ -73,6 +75,9 @@ function check_and_install_spice_earth_kernel()
     end
 end
 
+"""
+    Check and install SPICE leapseconds kernel
+"""
 function check_and_install_spice_leapseconds_kernel()
     # check if folder "spice_kernels" exists
     dir = @__DIR__
@@ -115,8 +120,9 @@ function get_remote_files(url::String)
     end
 end
 
-
-# Check and install space weather data
+"""
+    Check and install historical space weather data
+"""
 function check_and_install_spaceweather_historical()
     # Check if space weather data is available
     file_path = joinpath(@__DIR__,"spaceweather/Kp_ap_Ap_SN_F107_since_1932.txt")
@@ -150,6 +156,9 @@ function check_and_install_spaceweather_historical()
     end
 end
 
+"""
+    Check and install daily space weather forecast data
+"""
 function check_and_install_spaceweather_daily_forecast()
     # Check if space weather data is available
     file_path = joinpath(@__DIR__,"spaceweather/45-day-ap-forecast.txt")
@@ -183,6 +192,9 @@ function check_and_install_spaceweather_daily_forecast()
     return spaceweather_daily_forecast(file_path)
 end
 
+"""
+    Check and install monthly space weather forecast data
+"""
 function check_and_install_spaceweather_monthly_forecast()
     # Get the current loaded space weather data
     directory_path = joinpath(@__DIR__,"spaceweather/")
@@ -205,6 +217,7 @@ function check_and_install_spaceweather_monthly_forecast()
             download(download_path, joinpath(directory_path, file_name))
         catch e
             @error("Downloading most recent monthly space weather forecast data failed. Please check the following error message:\n$e")
+            println("url: ", download_path)
         end
     else # Check if it is the most recent one
         file_name = files[file_name_nbr]
