@@ -170,7 +170,7 @@ end
     n - normal: perpendicular to the orbit plane, along the angular momentum vector
     w - cross track: completes the right-handed coordinate system, pointing towards the center of the orbit.
 """
-function eci2tnw(r_eci::Vector{Float64}, v_eci::Vector{Float64})
+function eci2tnw(r_eci::Vector{Float64}, v_eci::Vector{Float64}, v_trafo::Vector{Float64})
     # Calculate the tangential (T) vector
     T = normalize(v_eci) # unit velocity vector
 
@@ -185,7 +185,7 @@ function eci2tnw(r_eci::Vector{Float64}, v_eci::Vector{Float64})
     R_eci_tnw = hcat(T, W, N)
 
     # Transform the velocity from ECI to TNW
-    v_tnw = R_eci_tnw' * v_eci
+    v_tnw = R_eci_tnw' * v_trafo
 
     return v_tnw
 end
