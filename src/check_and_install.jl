@@ -25,7 +25,7 @@ function check_and_install_spice_earth_kernel()
 
             # Get the list of remote files
             remote_files = get_remote_files(url)
-            combined_kernel_file = maximum(remote_files)
+            combined_kernel_file = maximum(remote_files) # TODO fix error OpenSSL.OpenSSLError("unable to get local issuer certificate")
 
             # Download the file
             download(url * combined_kernel_file, joinpath(kernel_dir, combined_kernel_file))
@@ -204,22 +204,22 @@ function check_and_install_spaceweather_monthly_forecast()
     if file_name_nbr === nothing # If the file is not found
         todays_date = today()
         current_year = Dates.year(todays_date)
-        current_month = Dates.format(todays_date, "mm")
+        previous_month = Dates.format(todays_date - Dates.Month(1), "mm") # previous month in "mm" format, e.g. "05" for May
         # Download the most recent space weather monthly forecast data
         try
             # Download the most recent space weather monthly forecast data
             @info("Downloading most recent monthly space weather forecast data...")
-            month_str = lowercase(Dates.monthname(todays_date)[1:3])
-            year_str = string(current_year)
-            file_name = month_str * year_str * "f10-prd.txt"
 
-            download_path = "https://www.nasa.gov/wp-content/uploads/" * year_str * "/" * current_month * "/" * file_name
+            previous_month_str = lowercase(Dates.monthname(todays_date - Dates.Month(1))[1:3])
+            year_str = string(current_year)
+            file_name = previous_month_str * year_str * "f10-prd.txt"
+
+            download_path = "https://www.nasa.gov/wp-content/uploads/" * year_str * "/" * previous_month * "/" * file_name
             download(download_path, joinpath(directory_path, file_name))
         catch e
             @error("Downloading most recent monthly space weather forecast data failed. Please check the following error message:\n$e")
-            println("url: ", download_path)
         end
-    else # Check if it is the most recent one
+    else # Check if it is the most recent one. The most recent one is always the previous month
         file_name = files[file_name_nbr]
         month_str = file_name[1:3]
         year_str = file_name[4:7]
@@ -234,9 +234,9 @@ function check_and_install_spaceweather_monthly_forecast()
         year = parse(Int, year_str)
         todays_date = today()
         current_year = Dates.year(todays_date)
-        current_month = Dates.month(todays_date)
+        previous_month = Dates.month(todays_date - Dates.Month(1))
 
-        if year < current_year || (year == current_year && month < current_month)
+        if year < current_year || (year == current_year && month < previous_month)
             try
                 # Delete the old file
                 rm(joinpath(directory_path, file_name))
@@ -244,8 +244,8 @@ function check_and_install_spaceweather_monthly_forecast()
                 @info("Downloading most recent monthly space weather forecast data...")
                 file_name = month_str * year_str * "f10-prd.txt"
 
-                current_month = Dates.format(todays_date, "mm")
-                download_path = "https://www.nasa.gov/wp-content/uploads/" * string(current_year) * "/" * current_month * "/" * file_name
+                previous_month = Dates.format(todays_date - Dates.Month(1), "mm") # previous month in "mm" format, e.g. "05" for May
+                download_path = "https://www.nasa.gov/wp-content/uploads/" * string(current_year) * "/" * previous_month * "/" * file_name
                 download(download_path, joinpath(directory_path, file_name))
             catch e
                 @error("Downloading most recent monthly space weather forecast data failed. Please check the following error message:\n$e")

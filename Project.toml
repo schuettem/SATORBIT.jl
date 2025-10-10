@@ -1,7 +1,7 @@
 name = "SATORBIT"
 uuid = "33a65a54-f5f4-444d-85f3-d5159949b07d"
-authors = ["Miklas Schütte <schuettem@irs.uni-stuttgart.de>"]
 version = "0.1.0"
+authors = ["Miklas Schütte <schuettem@irs.uni-stuttgart.de>"]
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
@@ -28,12 +28,12 @@ HWM14 = {rev = "main", url = "https://github.com/schuettem/HWM14.jl.git"}
 
 [compat]
 CSV = "0.10.14"
-CairoMakie = "0.12.14"
+CairoMakie = "0.12.18"
 DataFrames = "1.7.0"
 Dates = "1.11.0"
 FileIO = "1.16.6"
 GLFW = "3.4.3"
-GLMakie = "0.10.15"
+GLMakie = "0.10.18"
 GeoMakie = "0.7.8"
 GeometryBasics = "0.4.11"
 HTTP = "1.10.10"

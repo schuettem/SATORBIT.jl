@@ -11,9 +11,9 @@ function run_animation()
     # Orbit Parameters
     central_body = SATORBIT.Earth()
 
-    alt_perigee = 300e3
+    alt_perigee = 280e3
     radius_perigee = central_body.radius + alt_perigee
-    alt_apogee = 400e3
+    alt_apogee = 350e3
     radius_apogee = central_body.radius + alt_apogee
 
     e = (radius_apogee - radius_perigee) / (radius_apogee + radius_perigee) # Eccentricity
